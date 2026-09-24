@@ -21,8 +21,8 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 8 | Launch kit | **done** — PH / feature-drop / joint playbooks expand into dated jobs; posts pre-drafted from the brief; checklist taps; close writes results; sequencer proposes launches |
 | 9 | Relationship engine | **done** — v1 joint launches brokered between companies on the product (match → both accept → linked launches); v2 warm outreach sequences to influencers/peers, reply cancels the rest |
 | 10 | Site and onboarding engine | **done** — 40-check audit (clarity / action / first session / trust), rewrites as site_change jobs, hosted variant + CMS export, activation tracking, scorecard reads the audit |
-| 11 | Tool factory | next |
-| 12 | Learned judgment | |
+| 11 | Tool factory | **done** — three ideas/quarter from data assets + ICP questions; validated specs (calculator / scorecard / generator / lookup); one-page hosted tools with a safe evaluator; lead capture into signup_source; distribution posts; view/run/lead stats |
+| 12 | Learned judgment | next |
 
 ## Real LLM
 
@@ -161,6 +161,19 @@ GET  /companies/{id}/site/activation     signups vs activations, last 28 days
 
 Checks live in `site/checks.py` (audit-v1): each is a named function with a title, weight, evidence and fix. A tap on a
 site_change executes it (it becomes part of the variant/export). The scorecard's onboarding channel reads the latest audit.
+
+## Tool factory (Component 11)
+
+```
+POST  /companies/{id}/tools/propose      three tool ideas (calculator / scorecard / generator / lookup) as validated specs, status proposed
+GET   /companies/{id}/tools              tools with view / run / lead stats
+PATCH /tools/{id}/spec                   edit the spec (re-validated: formulas allow only + - * / ( ) comparisons, numbers, input ids, 'strings')
+POST  /tools/{id}/decide                 {approve} -> published + two distribution posts in the feed, or retired
+GET   /t/{company}/{slug}                the tool: one self-contained page, logic evaluated in the browser without eval()
+POST  /public/tools/{id}/event           view | run | lead (leads also become signup_source rows: channel tool:{slug})
+```
+
+Sequencer R9 proposes tools when search or launches are in phase and none is live.
 
 ## Run it
 

@@ -147,6 +147,14 @@ def plan_week(db: Session, company: Company, week_start: date | None = None) -> 
             s["proposed_launch"] = {"type": kind, "date": str(propose_date(kind, ws))}
             D(Decision("R8.launch_propose", s["proposed_launch"], f"Launches are in phase and none is open; proposing a {kind.replace('_', ' ')} on {s['proposed_launch']['date']}."))
 
+    # R9: one free tool per quarter — propose when search/launches are in phase and no tool is live or pending
+    if ("search" in active or "launches" in active):
+        from ..models import Tool
+        live = db.scalars(select(Tool).where(Tool.company_id == company.id, Tool.status.in_(["proposed", "draft", "published"]))).first()
+        if not live:
+            s["propose_tools"] = True
+            D(Decision("R9.tool", {"propose_tools": True}, "No free tool live; proposing three from the product's data assets and the ICP's questions."))
+
     return wp
 
 

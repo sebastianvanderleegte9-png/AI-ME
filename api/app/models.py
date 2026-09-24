@@ -213,3 +213,28 @@ class Relationship(Base):
     log: Mapped[list] = mapped_column(JSONB, default=list)
     created_at: Mapped[datetime] = _ts()
     updated_at: Mapped[datetime] = _ts()
+
+
+class Tool(Base):
+    __tablename__ = "tool"
+    id: Mapped[uuid.UUID] = _uuid()
+    company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("company.id", ondelete="CASCADE"))
+    slug: Mapped[str] = mapped_column(Text)
+    name: Mapped[str] = mapped_column(Text)
+    kind: Mapped[str] = mapped_column(Text)
+    spec: Mapped[dict] = mapped_column(JSONB, default=dict)
+    status: Mapped[str] = mapped_column(Text, default="proposed")
+    rationale: Mapped[str | None] = mapped_column(Text)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = _ts()
+    updated_at: Mapped[datetime] = _ts()
+
+
+class ToolEvent(Base):
+    __tablename__ = "tool_event"
+    id: Mapped[uuid.UUID] = _uuid()
+    tool_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tool.id", ondelete="CASCADE"))
+    company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("company.id", ondelete="CASCADE"))
+    kind: Mapped[str] = mapped_column(Text)
+    payload: Mapped[dict] = mapped_column(JSONB, default=dict)
+    created_at: Mapped[datetime] = _ts()
