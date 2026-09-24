@@ -116,6 +116,10 @@ def test_planner_abstains_without_neighbours(client):
 
 
 def test_dataset_learning_and_experiment(client):
+    with SessionLocal() as db:          # isolate from any earlier run's promotion or leftover rows
+        db.execute(text("DELETE FROM company_week"))
+        db.commit()
+        experiment.set_default(db, "rules")
     rng = random.Random(7)
     ids = _seed_population(n=48, weeks=5, arm_growth={"learned": 0.30, "rules": 0.10}, rng=rng, tag=f"pop-{uuid.uuid4().hex[:6]}")
     ds = client.get("/learning/dataset", headers=H).json()

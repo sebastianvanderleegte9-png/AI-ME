@@ -24,10 +24,13 @@ ALPHA = 0.05
 
 def assign(db: Session, company: Company, force: str | None = None) -> str:
     row = db.get(ExperimentArm, company.id)
-    if row:
+    if row and not force:
         return row.arm
     arm = force or ("learned" if int(hashlib.sha256(str(company.id).encode()).hexdigest(), 16) % 2 else "rules")
-    db.add(ExperimentArm(company_id=company.id, arm=arm, experiment=EXPERIMENT))
+    if row:
+        row.arm = arm            # an explicit assignment overrides the hash (operators only; logged by the caller)
+    else:
+        db.add(ExperimentArm(company_id=company.id, arm=arm, experiment=EXPERIMENT))
     db.commit()
     return arm
 
