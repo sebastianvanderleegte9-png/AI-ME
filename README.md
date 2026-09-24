@@ -23,6 +23,7 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. All twelve components a
 | 10 | Site and onboarding engine | **done** — 40-check audit (clarity / action / first session / trust), rewrites as site_change jobs, hosted variant + CMS export, activation tracking, scorecard reads the audit |
 | 11 | Tool factory | **done** — three ideas/quarter from data assets + ICP questions; validated specs (calculator / scorecard / generator / lookup); one-page hosted tools with a safe evaluator; lead capture into signup_source; distribution posts; view/run/lead stats |
 | 13 | SMS surface | **done** — phone link + verify; voice memo → drafts; numbered morning brief; yes/no/edit/batch by text; tool builds, joint proposals, plan changes; Friday number; pause; Twilio + Whisper providers behind fakes |
+| 14 | Web onboarding + billing | **done** — `/start` → 8-step wizard (company, customers, LinkedIn/X OAuth, phone verify by text, schedule mode, free diagnostic, Stripe Checkout, live); subscription drives `company.status`; lapsed card holds posting; encrypted tokens; account page |
 | 12 | Learned judgment | **done** — company-week dataset from outcomes; k-NN planner over similar company-weeks (cites its neighbours, abstains under 8); blind A/B arms; Welch's t-test evaluation; promotion gated on a win |
 
 ## Real LLM
@@ -208,6 +209,32 @@ as free text · yes 1 3 · no 2 · all · build 1 · why · plan · change: 3 po
 A bare yes with nothing in context shows the next undecided item; it never approves by guess.
 Providers: MESSAGING_PROVIDER=twilio (TWILIO_ACCOUNT_SID/AUTH_TOKEN/FROM_NUMBER), TRANSCRIPTION_PROVIDER=whisper (OPENAI_API_KEY),
 PUBLIC_BASE_URL for the setup link.
+
+## Web onboarding and billing (Component 14)
+
+The front door. A founder goes from the website to their first text in ten minutes, and sees a free growth scorecard before any card is asked for.
+
+```
+GET  /start                                  landing (email only)
+POST /start                                  -> 303 /setup/{token}      (same email resumes the same session)
+GET  /setup/{token}                          resume at the step reached
+GET/POST /setup/{token}/1..7                 company · customers · connect · phone · preferences · diagnostic · plan
+GET  /setup/{token}/oauth/{linkedin|x}       -> provider authorize URL (state = token:platform:nonce)
+GET  /setup/oauth/{platform}/callback        exchange code, store Fernet-encrypted token, set founder handle
+POST /setup/{token}/4/check                  409 until the founder has replied to the code by text
+GET  /setup/{token}/paid                     Stripe success_url (fake provider completes here; Stripe via webhook)
+POST /public/billing/webhook                 Stripe events (signature-checked) -> subscription -> company.status
+GET  /account/{token}                        plan, billing portal, connected accounts, phone, schedule mode
+GET  /companies/{id}/subscription            admin
+GET  /setup-sessions                         admin: where every signup is stuck
+```
+
+- Step 6 runs intake → scorecard → attention map (`workers.tasks.onboarding_diagnostic`; inline in local/test). The company stays `onboarding` until paid: nothing posts, nothing is scheduled.
+- Billing → status: `active|trialing` → `active`; `past_due|paused` → `paused`; `canceled` → `churned`. `execute_job` returns `held` for any company that is not active, so approved posts wait for the card and go out with `publish_due` once it clears. Data and scorecards are never deleted.
+- Activation sends the first text (score, first action, the memo ask) and marks the session complete.
+- `founder.schedule_mode`: `managed` (engine picks slots) or `approve_times` (each draft carries its slot; reply with a time to move it).
+- Providers: `BILLING_PROVIDER=fake|stripe` (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_FOUNDER|TEAM|GROWTH`), `OAUTH_PROVIDER=fake|real` (`LINKEDIN_CLIENT_ID/SECRET`, `X_CLIENT_ID/SECRET`), `TOKEN_ENCRYPTION_KEY` (Fernet; the dev default must be replaced), `PUBLIC_BASE_URL`.
+- Plans: Founder $500, Team $1,500, Growth $5,000 per month (`interfaces/billing_oauth.py:PLANS`).
 
 ## Run it
 

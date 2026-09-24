@@ -9,10 +9,10 @@ from .enrichment import Enrichment, FakeEnrichment
 from .llm import LLM, FakeLLM
 from .metrics import FakeMetricsSource, MetricsSource
 from .social import FakeSocial, Social
-from .registry import get_enrichment, get_llm, get_messaging, get_metrics_source, get_social, get_transcription
+from .registry import get_enrichment, get_llm, get_messaging, get_metrics_source, get_social, get_transcription, get_billing, get_oauth
 
 __all__ = [
     "LLM", "FakeLLM", "Enrichment", "FakeEnrichment", "Social", "FakeSocial",
     "MetricsSource", "FakeMetricsSource",
-    "get_llm", "get_enrichment", "get_social", "get_metrics_source", "get_messaging", "get_transcription",
+    "get_llm", "get_enrichment", "get_social", "get_metrics_source", "get_messaging", "get_transcription", "get_billing", "get_oauth",
 ]

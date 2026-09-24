@@ -68,3 +68,25 @@ def get_transcription():
         m = get_messaging()
         return WhisperTranscription(settings.openai_api_key, getattr(m, "fetch_media", lambda u: b""))
     raise NotImplementedError(settings.transcription_provider)
+
+
+@lru_cache
+def get_billing():
+    from .billing_oauth import FakeBilling, StripeBilling
+    if settings.billing_provider == "fake":
+        return FakeBilling()
+    if settings.billing_provider == "stripe":
+        if not (settings.stripe_secret_key and settings.stripe_webhook_secret):
+            raise RuntimeError("BILLING_PROVIDER=stripe needs STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET")
+        return StripeBilling(settings.stripe_secret_key, settings.stripe_webhook_secret,
+                             {"founder": settings.stripe_price_founder, "team": settings.stripe_price_team, "growth": settings.stripe_price_growth})
+    raise NotImplementedError(settings.billing_provider)
+
+
+@lru_cache
+def get_oauth():
+    from .billing_oauth import FakeOAuth, RealOAuth
+    if settings.oauth_provider == "fake":
+        return FakeOAuth()
+    return RealOAuth((settings.linkedin_client_id, settings.linkedin_client_secret) if settings.linkedin_client_id else None,
+                     (settings.x_client_id, settings.x_client_secret) if settings.x_client_id else None)

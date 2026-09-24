@@ -27,5 +27,19 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     public_base_url: str = "http://localhost:8000"   # for setup links in texts
 
+    # Onboarding + billing (Component 14)
+    billing_provider: str = "fake"          # fake | stripe
+    stripe_secret_key: str | None = None
+    stripe_webhook_secret: str | None = None
+    stripe_price_founder: str | None = None
+    stripe_price_team: str | None = None
+    stripe_price_growth: str | None = None
+    oauth_provider: str = "fake"            # fake | real
+    linkedin_client_id: str | None = None
+    linkedin_client_secret: str | None = None
+    x_client_id: str | None = None
+    x_client_secret: str | None = None
+    token_encryption_key: str = "zK3G3ml8tE6a4h0KZ0QW3M4aM9r1vZ8KIhG7z8W2lqg="   # dev only; set a real Fernet key in prod
+
 
 settings = Settings()

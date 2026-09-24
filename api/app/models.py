@@ -3,8 +3,8 @@ truth; these are typed handles for the API and workers. Keep column names identi
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, REAL, Text
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, LargeBinary, Numeric, REAL, Text
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -47,6 +47,7 @@ class Founder(Base):
     phone: Mapped[str | None] = mapped_column(Text)
     phone_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     timezone: Mapped[str] = mapped_column(Text, default="America/New_York")
+    schedule_mode: Mapped[str] = mapped_column(Text, default="managed")
     created_at: Mapped[datetime] = _ts()
     updated_at: Mapped[datetime] = _ts()
 
@@ -288,4 +289,43 @@ class SmsState(Base):
     quiet_hours: Mapped[dict] = mapped_column(JSONB, default=lambda: {"start": 21, "end": 7})
     brief_hour: Mapped[int] = mapped_column(Integer, default=8)
     paused: Mapped[bool] = mapped_column(Boolean, default=False)
+    updated_at: Mapped[datetime] = _ts()
+
+
+class SetupSession(Base):
+    __tablename__ = "setup_session"
+    id: Mapped[uuid.UUID] = _uuid()
+    token: Mapped[str] = mapped_column(Text)
+    email: Mapped[str] = mapped_column(Text)
+    company_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("company.id", ondelete="SET NULL"))
+    founder_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("founder.id", ondelete="SET NULL"))
+    step: Mapped[int] = mapped_column(Integer, default=1)
+    data: Mapped[dict] = mapped_column(JSONB, default=dict)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = _ts()
+    updated_at: Mapped[datetime] = _ts()
+
+
+class Subscription(Base):
+    __tablename__ = "subscription"
+    company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("company.id", ondelete="CASCADE"), primary_key=True)
+    provider: Mapped[str] = mapped_column(Text, default="stripe")
+    customer_ref: Mapped[str | None] = mapped_column(Text)
+    subscription_ref: Mapped[str | None] = mapped_column(Text)
+    plan: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text, default="incomplete")
+    current_period_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = _ts()
+    updated_at: Mapped[datetime] = _ts()
+
+
+class OAuthToken(Base):
+    __tablename__ = "oauth_token"
+    founder_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("founder.id", ondelete="CASCADE"), primary_key=True)
+    platform: Mapped[str] = mapped_column(Text, primary_key=True)
+    handle: Mapped[str | None] = mapped_column(Text)
+    ciphertext: Mapped[bytes] = mapped_column(LargeBinary)
+    scopes: Mapped[list] = mapped_column(ARRAY(Text), default=list)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = _ts()
     updated_at: Mapped[datetime] = _ts()

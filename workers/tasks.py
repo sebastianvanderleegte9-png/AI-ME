@@ -36,6 +36,13 @@ def execute_job(job_id: str) -> str:
         if j.state not in ("approved", "edited"):
             log.warning("refusing to execute job %s in state %s", job_id, j.state)
             return "refused"
+        from app.models import Company
+        co = db.get(Company, j.company_id)
+        if co and co.status != "active":
+            # Component 14: a lapsed or unpaid subscription holds publishing; the job stays approved and
+            # is picked up by publish_due once the company is active again.
+            log.warning("holding job %s: company %s is %s", job_id, j.company_id, co.status)
+            return "held"
         try:
             if j.type == "outreach" and j.channel in ("linkedin", "x"):
                 # follow-up steps are conditional on silence; skip if the relationship already got a reply
@@ -164,3 +171,25 @@ def sms_friday_numbers() -> int:
             send_friday(db, f)
             n += 1
     return n
+
+
+# ---------- Component 14: onboarding ----------
+def onboarding_diagnostic(token: str) -> str:
+    """Background: intake -> scorecard -> attention map for a setup session (free diagnostic, step 6)."""
+    from app.onboarding import flow
+    with SessionLocal() as db:
+        s = flow.by_token(db, token)
+        if not s or not s.company_id:
+            return "missing"
+        flow.step6_diagnostic(db, s)
+        return "done"
+
+
+def onboarding_activate(token: str) -> str:
+    """Background, after the billing webhook: send the first text and open the SMS loop."""
+    from app.onboarding import flow
+    with SessionLocal() as db:
+        s = flow.by_token(db, token)
+        if not s or not flow.is_active(db, s.company_id):
+            return "not-active"
+        return "sent" if flow.first_text(db, s) else "no-phone"
