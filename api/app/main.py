@@ -16,7 +16,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="Marketing Engineer API", version="0.0.1", lifespan=lifespan)
+app = FastAPI(title="Aime API", version="0.0.1", lifespan=lifespan)
 app.include_router(companies.router)
 app.include_router(jobs.router)
 app.include_router(metrics.router)

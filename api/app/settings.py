@@ -26,6 +26,12 @@ class Settings(BaseSettings):
     twilio_from_number: str | None = None
     openai_api_key: str | None = None
     public_base_url: str = "http://localhost:8000"   # for setup links in texts
+    # brand (Component 14b). The font is loaded from the privacy-friendly Google Fonts mirror
+    # (api.fonts.coollabs.io) so no visitor data reaches Google. Any Google Fonts family works.
+    site_name: str = "Aime"
+    site_font: str = "Figtree"
+    site_font_weights: str = "400;500;600;700;800"
+    font_css_base: str = "https://api.fonts.coollabs.io/css2"
 
     # Onboarding + billing (Component 14)
     billing_provider: str = "fake"          # fake | stripe

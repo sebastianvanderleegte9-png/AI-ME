@@ -235,6 +235,7 @@ GET  /setup-sessions                         admin: where every signup is stuck
 - Activation sends the first text (score, first action, the memo ask) and marks the session complete.
 - `founder.schedule_mode`: `managed` (engine picks slots) or `approve_times` (each draft carries its slot; reply with a time to move it).
 - Providers: `BILLING_PROVIDER=fake|stripe` (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_FOUNDER|TEAM|GROWTH`), `OAUTH_PROVIDER=fake|real` (`LINKEDIN_CLIENT_ID/SECRET`, `X_CLIENT_ID/SECRET`), `TOKEN_ENCRYPTION_KEY` (Fernet; the dev default must be replaced), `PUBLIC_BASE_URL`.
+- Brand: `SITE_NAME` (Aime), `SITE_FONT` (any Google Fonts family, default Figtree), `SITE_FONT_WEIGHTS`, `FONT_CSS_BASE` (default `https://api.fonts.coollabs.io/css2`, the privacy-friendly Google Fonts mirror; point it at your own instance of that service to self-host). Palette lives in `onboarding/site.py:BRAND_CSS`.
 - Plans: Founder $500, Team $1,500, Growth $5,000 per month (`interfaces/billing_oauth.py:PLANS`).
 
 ## Run it

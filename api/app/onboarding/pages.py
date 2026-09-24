@@ -3,10 +3,12 @@ no framework: the wizard has to load on a phone in a coffee shop and be done in 
 from html import escape as e
 
 from ..interfaces.billing_oauth import PLANS
+from ..settings import settings
+from .site import BRAND_CSS, font_link
 
 CSS = """
-:root{--ink:#f3f2ff;--mute:#9a99b3;--line:#232338;--bg:#07070c;--card:#11111f;--acc:#6c63ff;--ok:#34d399;--warn:#fbbf24}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,Inter,Segoe UI,sans-serif}
+
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--font)}
 .wrap{max-width:640px;margin:0 auto;padding:32px 16px 64px}
 .brand{font-weight:700;letter-spacing:-.01em;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}
 .brand small{color:var(--mute);font-weight:400}
@@ -14,13 +16,13 @@ CSS = """
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px}
 h1{font-size:24px;margin:0 0 6px;letter-spacing:-.02em}h2{font-size:17px;margin:20px 0 8px}p.sub{color:var(--mute);margin:0 0 20px}
 label{display:block;font-size:13px;font-weight:600;margin:14px 0 4px}
-input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#0e0e1a;color:var(--ink)}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:var(--bg2);color:var(--ink)}
 textarea{min-height:72px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:520px){.row{grid-template-columns:1fr}}
 button,.btn{display:inline-block;margin-top:20px;background:var(--acc);color:#fff;border:0;border-radius:8px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
 .cust{border:1px dashed var(--line);border-radius:8px;padding:12px;margin-top:12px}
-.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(108,99,255,.18);color:#a59bff;margin-left:8px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(59,130,246,.18);color:var(--acc2);margin-left:8px}
 .tag.ok{background:rgba(52,211,153,.15);color:var(--ok)}
 .score{display:flex;align-items:baseline;gap:10px}.score b{font-size:48px;letter-spacing:-.03em}.score span{color:var(--mute)}
 .bars{margin:16px 0}.bar{display:grid;grid-template-columns:110px 1fr 36px;gap:10px;align-items:center;margin:6px 0;font-size:14px}
@@ -32,7 +34,7 @@ button,.btn{display:inline-block;margin-top:20px;background:var(--acc);color:#ff
 .opt div b{display:block}.opt div small{color:var(--mute)}
 ul.list{padding-left:18px;margin:6px 0}.note{font-size:13px;color:var(--mute);margin-top:16px}
 .done{text-align:center;padding:24px 0}.done .big{font-size:56px}
-code{background:#1e1e30;padding:2px 6px;border-radius:4px}
+code{background:var(--bg2);padding:2px 6px;border-radius:4px}
 """
 
 
@@ -41,8 +43,8 @@ def shell(title: str, body: str, step: int | None = None) -> str:
     if step:
         bar = '<div class="steps">' + "".join(f'<i class="{"done" if i < step else "on" if i == step else ""}"></i>' for i in range(1, 9)) + "</div>"
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{e(title)} · Marketing Engineer</title><style>{CSS}</style></head><body><div class="wrap">
-<div class="brand"><a href="/" style="color:inherit;text-decoration:none">Marketing Engineer</a> <small>{('step ' + str(step) + ' of 8') if step else ''}</small></div>{bar}
+<title>{e(title)} · {e(settings.site_name)}</title>{font_link()}<style>{BRAND_CSS}{CSS}</style></head><body><div class="wrap">
+<div class="brand"><a href="/" style="color:inherit;text-decoration:none">{e(settings.site_name)}</a> <small>{('step ' + str(step) + ' of 8') if step else ''}</small></div>{bar}
 <div class="card">{body}</div></div></body></html>"""
 
 
