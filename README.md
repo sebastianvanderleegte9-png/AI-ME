@@ -22,6 +22,7 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. All twelve components a
 | 9 | Relationship engine | **done** — v1 joint launches brokered between companies on the product (match → both accept → linked launches); v2 warm outreach sequences to influencers/peers, reply cancels the rest |
 | 10 | Site and onboarding engine | **done** — 40-check audit (clarity / action / first session / trust), rewrites as site_change jobs, hosted variant + CMS export, activation tracking, scorecard reads the audit |
 | 11 | Tool factory | **done** — three ideas/quarter from data assets + ICP questions; validated specs (calculator / scorecard / generator / lookup); one-page hosted tools with a safe evaluator; lead capture into signup_source; distribution posts; view/run/lead stats |
+| 13 | SMS surface | **done** — phone link + verify; voice memo → drafts; numbered morning brief; yes/no/edit/batch by text; tool builds, joint proposals, plan changes; Friday number; pause; Twilio + Whisper providers behind fakes |
 | 12 | Learned judgment | **done** — company-week dataset from outcomes; k-NN planner over similar company-weeks (cites its neighbours, abstains under 8); blind A/B arms; Welch's t-test evaluation; promotion gated on a win |
 
 ## Real LLM
@@ -190,6 +191,23 @@ POST /learning/experiment/default               {engine} -> promotion to learned
 The learned planner starts from the rules plan (hard rules R2/R3/R4 stay) and adopts the settings of the best-growing
 30% among its neighbours. The Monday re-plan runs whichever engine `engine_for(company)` returns: the promoted default,
 else the company's blind arm. Everything is auditable: every learned decision names its neighbours and their growth.
+
+## SMS surface (Component 13)
+
+```
+POST /founders/{id}/phone                 {phone: +1…} -> verification text (code returned in local/test)
+POST /public/sms/inbound                  Twilio webhook (signature-checked); form fields From, Body, NumMedia, MediaUrl0…
+POST /sms/simulate                        same handler without the signature, for local testing
+POST /founders/{id}/sms/brief|friday      send now (workers send these on schedule: sms_morning_briefs hourly, sms_friday_numbers Fridays)
+POST /founders/{id}/sms/item/{job_id}     text one item;  /sms/tools  /sms/joint/{rel_id}  likewise
+GET  /founders/{id}/sms/thread            the conversation and its state
+```
+
+What a founder can text: a voice memo (→ interview → drafts) · brief · a number (see item) · yes / no / done / or the fix
+as free text · yes 1 3 · no 2 · all · build 1 · why · plan · change: 3 posts, no replies · pause / resume · help.
+A bare yes with nothing in context shows the next undecided item; it never approves by guess.
+Providers: MESSAGING_PROVIDER=twilio (TWILIO_ACCOUNT_SID/AUTH_TOKEN/FROM_NUMBER), TRANSCRIPTION_PROVIDER=whisper (OPENAI_API_KEY),
+PUBLIC_BASE_URL for the setup link.
 
 ## Run it
 

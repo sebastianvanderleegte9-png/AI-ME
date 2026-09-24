@@ -3,7 +3,7 @@ truth; these are typed handles for the API and workers. Keep column names identi
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, Numeric, REAL, Text
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, REAL, Text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -44,6 +44,9 @@ class Founder(Base):
     linkedin_handle: Mapped[str | None] = mapped_column(Text)
     x_handle: Mapped[str | None] = mapped_column(Text)
     voice_profile_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
+    phone: Mapped[str | None] = mapped_column(Text)
+    phone_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    timezone: Mapped[str] = mapped_column(Text, default="America/New_York")
     created_at: Mapped[datetime] = _ts()
     updated_at: Mapped[datetime] = _ts()
 
@@ -258,4 +261,31 @@ class CompanyWeek(Base):
     settings: Mapped[dict] = mapped_column(JSONB, default=dict)
     result: Mapped[dict] = mapped_column(JSONB, default=dict)
     created_at: Mapped[datetime] = _ts()
+    updated_at: Mapped[datetime] = _ts()
+
+
+class SmsMessage(Base):
+    __tablename__ = "sms_message"
+    id: Mapped[uuid.UUID] = _uuid()
+    founder_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("founder.id", ondelete="SET NULL"))
+    company_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("company.id", ondelete="SET NULL"))
+    direction: Mapped[str] = mapped_column(Text)
+    phone: Mapped[str] = mapped_column(Text)
+    body: Mapped[str] = mapped_column(Text, default="")
+    media: Mapped[list] = mapped_column(JSONB, default=list)
+    kind: Mapped[str | None] = mapped_column(Text)
+    refs: Mapped[dict] = mapped_column(JSONB, default=dict)
+    provider_ref: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = _ts()
+
+
+class SmsState(Base):
+    __tablename__ = "sms_state"
+    founder_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("founder.id", ondelete="CASCADE"), primary_key=True)
+    current: Mapped[dict] = mapped_column(JSONB, default=dict)
+    batch: Mapped[list] = mapped_column(JSONB, default=list)
+    pending_verify: Mapped[str | None] = mapped_column(Text)
+    quiet_hours: Mapped[dict] = mapped_column(JSONB, default=lambda: {"start": 21, "end": 7})
+    brief_hour: Mapped[int] = mapped_column(Integer, default=8)
+    paused: Mapped[bool] = mapped_column(Boolean, default=False)
     updated_at: Mapped[datetime] = _ts()

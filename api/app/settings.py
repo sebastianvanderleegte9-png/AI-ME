@@ -18,5 +18,14 @@ class Settings(BaseSettings):
 
     rules_version: str = "v0"
 
+    # SMS surface (Component 13)
+    messaging_provider: str = "fake"       # fake | twilio
+    transcription_provider: str = "fake"   # fake | whisper
+    twilio_account_sid: str | None = None
+    twilio_auth_token: str | None = None
+    twilio_from_number: str | None = None
+    openai_api_key: str | None = None
+    public_base_url: str = "http://localhost:8000"   # for setup links in texts
+
 
 settings = Settings()

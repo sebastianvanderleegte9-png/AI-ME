@@ -128,3 +128,39 @@ def monday_replan() -> int:
             commit_week(db, c, plan_week(db, c))
             n += 1
     return n
+
+
+def sms_morning_briefs() -> int:
+    """Hourly: send the brief to every verified founder whose local hour == their brief_hour and who isn't paused."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    from sqlalchemy import select
+    from app.models import Founder, SmsState
+    from app.sms.engine import send_brief
+    n = 0
+    with SessionLocal() as db:
+        for f in db.scalars(select(Founder).where(Founder.phone_verified_at.is_not(None))).all():
+            st = db.get(SmsState, f.id)
+            if st and st.paused:
+                continue
+            hour = datetime.now(ZoneInfo(f.timezone or "America/New_York")).hour
+            if hour == (st.brief_hour if st else 8):
+                send_brief(db, f)
+                n += 1
+    return n
+
+
+def sms_friday_numbers() -> int:
+    """Fridays after close: the one number, to every verified founder."""
+    from sqlalchemy import select
+    from app.models import Founder, SmsState
+    from app.sms.engine import send_friday
+    n = 0
+    with SessionLocal() as db:
+        for f in db.scalars(select(Founder).where(Founder.phone_verified_at.is_not(None))).all():
+            st = db.get(SmsState, f.id)
+            if st and st.paused:
+                continue
+            send_friday(db, f)
+            n += 1
+    return n

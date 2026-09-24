@@ -41,3 +41,30 @@ def get_social() -> Social:
 @lru_cache
 def get_metrics_source() -> MetricsSource:
     return FakeMetricsSource()
+
+
+@lru_cache
+def get_messaging():
+    from .messaging import FakeMessaging
+    if settings.messaging_provider == "fake":
+        return FakeMessaging()
+    if settings.messaging_provider == "twilio":
+        from .twilio_messaging import TwilioMessaging
+        if not (settings.twilio_account_sid and settings.twilio_auth_token and settings.twilio_from_number):
+            raise RuntimeError("MESSAGING_PROVIDER=twilio needs TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER")
+        return TwilioMessaging(settings.twilio_account_sid, settings.twilio_auth_token, settings.twilio_from_number)
+    raise NotImplementedError(settings.messaging_provider)
+
+
+@lru_cache
+def get_transcription():
+    from .messaging import FakeTranscription
+    if settings.transcription_provider == "fake":
+        return FakeTranscription()
+    if settings.transcription_provider == "whisper":
+        from .twilio_messaging import WhisperTranscription
+        if not settings.openai_api_key:
+            raise RuntimeError("TRANSCRIPTION_PROVIDER=whisper needs OPENAI_API_KEY")
+        m = get_messaging()
+        return WhisperTranscription(settings.openai_api_key, getattr(m, "fetch_media", lambda u: b""))
+    raise NotImplementedError(settings.transcription_provider)
