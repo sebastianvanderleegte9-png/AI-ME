@@ -61,4 +61,7 @@ class FakeSocial(Social):
                          engaged_handles=[f"engaged_{i}" for i in range(n // 100)])
 
     def account_stats(self, *, founder_id, channel):
-        return {"followers": 2500, "impressions_30d": 40000, "posts_30d": 8}
+        return {"followers": 2500, "impressions_30d": 40000, "posts_30d": 8,
+                "recent_posts": [
+                    {"text": f"fake past post {i} on {channel}: shipped a thing, learned a thing.",
+                     "impressions": 1000 + i * 137, "reactions": 20 + i} for i in range(5)]}

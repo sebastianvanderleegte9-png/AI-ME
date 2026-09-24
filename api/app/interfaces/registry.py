@@ -16,7 +16,12 @@ from .social import FakeSocial, Social
 def get_llm() -> LLM:
     if settings.llm_provider == "fake":
         return FakeLLM()
-    raise NotImplementedError(f"llm_provider={settings.llm_provider} arrives in Component 1")
+    if settings.llm_provider == "anthropic":
+        from .anthropic_llm import AnthropicLLM
+        if not settings.anthropic_api_key:
+            raise RuntimeError("LLM_PROVIDER=anthropic but ANTHROPIC_API_KEY is not set")
+        return AnthropicLLM(settings.anthropic_api_key)
+    raise NotImplementedError(f"unknown llm_provider={settings.llm_provider}")
 
 
 @lru_cache

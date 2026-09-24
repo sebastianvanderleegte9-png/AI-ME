@@ -5,7 +5,7 @@ from sqlalchemy import text
 
 from .db import engine, migrate
 from .queue import redis
-from .routers import companies, jobs, metrics
+from .routers import companies, intake, jobs, metrics
 from .settings import settings
 
 
@@ -20,6 +20,7 @@ app = FastAPI(title="Marketing Engineer API", version="0.0.1", lifespan=lifespan
 app.include_router(companies.router)
 app.include_router(jobs.router)
 app.include_router(metrics.router)
+app.include_router(intake.router)
 
 
 @app.get("/health")

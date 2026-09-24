@@ -11,13 +11,28 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | # | Component | State |
 |---|-----------|-------|
 | 0 | Schema and skeleton | **done** — 11 tables, API, queue, worker, fakes, tests, CI |
-| 1 | Intake and ICP model | next |
-| 2 | Scorecard (Judgment v0) | |
+| 1 | Intake and ICP model | **done** — founders, crawl→product summary, 3 customers→ICP+embedding, voice samples, Anthropic provider |
+| 2 | Scorecard (Judgment v0) | next |
 | 3 | Voice engine + approval feed (+ visuals) | |
 | 4 | Attention map | |
 | 5 | Metrics and Friday report | |
 | 6 | Sequencer (Judgment v1) | |
 | 7–12 | Page factory, launch kit, relationships, site/onboarding, tool factory, learned judgment | |
+
+## Real LLM
+
+Set `LLM_PROVIDER=anthropic` and `ANTHROPIC_API_KEY=...` in `.env`. Without them every LLM call returns a deterministic fake so the pipeline still runs end to end.
+
+## Intake (Component 1)
+
+```
+POST /companies/{id}/founders        {name, linkedin_handle, x_handle}
+POST /companies/{id}/intake          {site_url, docs_urls[], best_customers[3+], site_text?}
+GET  /companies/{id}/icp             PATCH to edit (bumps version)
+GET  /founders/{id}/voice            samples + rules (banned phrases etc.)
+```
+
+If a site blocks fetches, pass `site_text` with the pasted page copy.
 
 ## Run it
 
