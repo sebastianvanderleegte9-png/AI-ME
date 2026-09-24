@@ -135,8 +135,17 @@ def plan_week(db: Session, company: Company, week_start: date | None = None) -> 
 
     # R8: launches in phase -> open a launch calendar (Component 8 consumes this flag)
     if "launches" in active:
-        s["launch_tasks"] = True
-        D(Decision("R8.launch", {"launch_tasks": True}, "Launches are in phase; the launch kit will propose a date and calendar."))
+        from ..launch.kit import propose_date
+        from ..models import Launch
+        open_launch = db.scalars(select(Launch).where(Launch.company_id == company.id, Launch.status.in_(["planned", "active"]))).first()
+        if open_launch:
+            s["launch_tasks"] = True
+            D(Decision("R8.launch_active", {"launch_id": str(open_launch.id)}, f"'{open_launch.name}' launches {open_launch.launch_date}; its calendar is in the feed."))
+        else:
+            kind = "feature_drop" if week_no < 8 else "product_hunt"
+            s["launch_tasks"] = True
+            s["proposed_launch"] = {"type": kind, "date": str(propose_date(kind, ws))}
+            D(Decision("R8.launch_propose", s["proposed_launch"], f"Launches are in phase and none is open; proposing a {kind.replace('_', ' ')} on {s['proposed_launch']['date']}."))
 
     return wp
 

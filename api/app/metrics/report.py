@@ -73,7 +73,12 @@ def rollup(db: Session, company: Company, week_of: date | None = None) -> dict:
     src = dict(db.execute(select(SignupSource.classified_channel, func.count()).where(
         SignupSource.company_id == cid, SignupSource.created_at >= start).group_by(SignupSource.classified_channel)).all())
 
-    return {"week_start": str(start), "week_end": str(end), "this": this, "prev": prev, "delta": delta,
+    from ..models import Launch
+    launches = [{"id": str(L.id), "name": L.name, "type": L.type, "date": str(L.launch_date), "status": L.status,
+                 "days_out": (L.launch_date - end).days, "results": L.results}
+                for L in db.scalars(select(Launch).where(Launch.company_id == cid, Launch.status.in_(["planned", "active", "launched", "closed"]),
+                                                          Launch.launch_date >= start - timedelta(days=7)).order_by(Launch.launch_date))]
+    return {"week_start": str(start), "week_end": str(end), "this": this, "prev": prev, "delta": delta, "launches": launches,
             "approval_rate": approval_rate, "edit_rate": edit_rate, "decided": decided, "top_posts": top,
             "signup_sources": {k or "unknown": v for k, v in src.items()}}
 
@@ -137,6 +142,7 @@ def report_html(company: Company, r: dict, plan: Plan | None) -> str:
 <h2>Top posts</h2><ol>{top}</ol>
 <h2>Your part</h2><p>You decided {r['decided']} drafts · approval {f"{r['approval_rate']:.0%}" if r['approval_rate'] is not None else '—'} · edited {f"{r['edit_rate']:.0%}" if r['edit_rate'] is not None else '—'}. Signups said they came from: {src}.</p>
 <h2>Next week</h2><ul>{nxt or '<li class="m">Plan pending.</li>'}</ul>
+{"".join(f"<h2>Launch</h2><p><b>{e(L['name'])}</b> · {e(L['type'].replace('_',' '))} · {L['date']} ({L['days_out']:+d} days) · {e(L['status'])}" + (f" · {L['results'].get('signups', 0):.0f} signups, {L['results'].get('impressions_icp', 0):,} in ICP" if L['results'] else "") + "</p>" for L in r.get('launches', []))}
 <p class="m">impressions inside ICP = impressions × share of engaged accounts that match your attention map (method icp_v1; a 20% prior is used when fewer than 5 engaged accounts are visible).</p>
 </body></html>"""
 

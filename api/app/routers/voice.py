@@ -66,14 +66,16 @@ def interview(founder_id: uuid.UUID, body: InterviewIn, db: Session = Depends(ge
 @router.get("/founders/{founder_id}/feed")
 def feed(founder_id: uuid.UUID, state: str = "pending", db: Session = Depends(get_db)):
     """The approval feed: what the founder sees on their phone. Oldest slot first."""
-    q = select(Job).where(Job.founder_id == founder_id, Job.type.in_(["post", "reply"]))
+    q = select(Job).where(Job.founder_id == founder_id, Job.type.in_(["post", "reply", "launch_task"]))
     if state != "all":
         q = q.where(Job.state == state)
     jobs = db.scalars(q.order_by(Job.scheduled_for.nulls_last(), Job.created_at)).all()
     return [{"id": str(j.id), "channel": j.channel, "format": j.format, "state": j.state,
              "scheduled_for": j.scheduled_for, "voice_match": j.voice_match,
              "text": j.output.get("text"), "media": j.output.get("media", []),
-             "why": {"claim": j.input.get("claim", {}).get("text"), "shape": j.input.get("shape")}} for j in jobs]
+             "why": {"claim": j.input.get("claim", {}).get("text"), "shape": j.input.get("shape")},
+             "launch": {"id": j.input["launch_id"], "day": j.input.get("day"), "title": j.input.get("title")} if j.input.get("launch_id") else None}
+            for j in jobs]
 
 
 @router.get("/founders/{founder_id}/voice/stats")

@@ -18,8 +18,9 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 5 | Metrics and Friday report | **done** — daily pull, impressions-inside-ICP (icp_v1), signup-source widget, weekly outcome row, Friday report + share card |
 | 6 | Sequencer (Judgment v1) | **done** — Monday re-plan from the outcome row; 8 named rules; settings steer the voice engine; overrides logged |
 | 7 | Page factory | **done** — 3 templates, ICP/product-driven candidates, data-point-required generation, batch approval, hosted pages + sitemap + FAQ schema, indexed tracking |
-| 8 | Launch kit | next |
-| 9–12 | Relationships, site/onboarding, tool factory, learned judgment | |
+| 8 | Launch kit | **done** — PH / feature-drop / joint playbooks expand into dated jobs; posts pre-drafted from the brief; checklist taps; close writes results; sequencer proposes launches |
+| 9 | Relationship engine | next |
+| 10–12 | Site/onboarding, tool factory, learned judgment | |
 
 ## Real LLM
 
@@ -118,6 +119,19 @@ GET  /p/{id}/{slug}   GET /p/{id}/sitemap.xml  public; drafts are never served
 
 Rule: no data point, no page. Candidates are segments x personas x competitors x features from the ICP and product
 summary; tagged data points route to matching pages.
+
+## Launch kit (Component 8)
+
+```
+GET  /launch-playbooks                        product_hunt (ph-v1, T-42..T+7) · feature_drop (drop-v1) · joint (joint-v1)
+POST /companies/{id}/launches                 {type, name, launch_date?, founder_id?, brief{what, why_now, hook, proof[], number?, customer?, target_signups}}
+GET  /launches/{id}                           launch + calendar (every task/post with date, state, text)
+POST /launches/{id}/expand                    (re)expand the playbook; idempotent
+POST /launches/{id}/close                     results from the metrics tables for launch week
+```
+
+Playbook posts are drafted by the voice engine from the brief and land in the approval feed with the rest; checklist
+tasks complete on tap. Sequencer R8 proposes a launch (type + Tue/Wed date) when launches are in phase and none is open.
 
 ## Run it
 

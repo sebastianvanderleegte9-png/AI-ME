@@ -181,3 +181,19 @@ class SignupSource(Base):
     classified_by: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = _ts()
     updated_at: Mapped[datetime] = _ts()
+
+
+class Launch(Base):
+    __tablename__ = "launch"
+    id: Mapped[uuid.UUID] = _uuid()
+    company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("company.id", ondelete="CASCADE"))
+    founder_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("founder.id", ondelete="SET NULL"))
+    type: Mapped[str] = mapped_column(Text)
+    name: Mapped[str] = mapped_column(Text)
+    launch_date: Mapped[date] = mapped_column(Date)
+    playbook: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text, default="planned")
+    brief: Mapped[dict] = mapped_column(JSONB, default=dict)
+    results: Mapped[dict] = mapped_column(JSONB, default=dict)
+    created_at: Mapped[datetime] = _ts()
+    updated_at: Mapped[datetime] = _ts()
