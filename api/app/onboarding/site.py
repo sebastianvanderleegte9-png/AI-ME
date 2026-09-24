@@ -99,16 +99,16 @@ def page() -> str:
 <div class="proof"><div><b>10 min</b><span>a week from you</span></div><div><b>9</b><span>channels scored, free</span></div><div><b>0</b><span>posts without your yes</span></div></div>
 </div>
 <div class="phone"><div class="t">Today 8:00 AM</div>
-<div class="msg in">Morning, Juraj. 4 things:
-1. Post (LinkedIn): "1,300 agents onboarded in six weeks. Here is what broke."
-2. Reply to Sarah K. (COO, 40k followers) on brokerage AI
-3. Post (X): the four-hours-per-packet line
-4. DM: Dan at Compass, warm intro from Tuesday's thread
+<div class="msg in">Morning, Noah. 4 things:
+1. Post (LinkedIn): "1,300 users onboarded in six weeks. Here is what broke."
+2. Reply to Sarah K. (COO, 40k followers) on AI ops
+3. Post (X): the four-hours-per-week line
+4. DM: Dan at Northwind, warm intro from Tuesday's thread
 Reply yes 1 3, no 2, or type an edit.</div>
 <div class="msg out">yes 1 3 4</div>
 <div class="msg in">Done. 1 goes out at 11:10 (your audience's peak). 3 at 2:40. DM sent. #2 kept for tomorrow.</div>
 <div class="msg out">2 → shorter, lead with the number</div>
-<div class="msg in">Rewritten. "40% of inbound calls never got picked up. Here is the fix that took nine weeks, not two." Post it?</div>
+<div class="msg in">Rewritten. "40% of signups never finished onboarding. Here is the fix that took nine weeks, not two." Post it?</div>
 <div class="msg out">yes</div></div>
 </div></header>
 
