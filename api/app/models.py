@@ -197,3 +197,19 @@ class Launch(Base):
     results: Mapped[dict] = mapped_column(JSONB, default=dict)
     created_at: Mapped[datetime] = _ts()
     updated_at: Mapped[datetime] = _ts()
+
+
+class Relationship(Base):
+    __tablename__ = "relationship"
+    id: Mapped[uuid.UUID] = _uuid()
+    company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("company.id", ondelete="CASCADE"))
+    kind: Mapped[str] = mapped_column(Text)
+    partner_company_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("company.id", ondelete="CASCADE"))
+    account_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("account.id", ondelete="CASCADE"))
+    state: Mapped[str] = mapped_column(Text, default="proposed")
+    score: Mapped[float | None] = mapped_column(REAL)
+    reason: Mapped[str | None] = mapped_column(Text)
+    plan: Mapped[dict] = mapped_column(JSONB, default=dict)
+    log: Mapped[list] = mapped_column(JSONB, default=list)
+    created_at: Mapped[datetime] = _ts()
+    updated_at: Mapped[datetime] = _ts()

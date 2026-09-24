@@ -19,8 +19,9 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 6 | Sequencer (Judgment v1) | **done** — Monday re-plan from the outcome row; 8 named rules; settings steer the voice engine; overrides logged |
 | 7 | Page factory | **done** — 3 templates, ICP/product-driven candidates, data-point-required generation, batch approval, hosted pages + sitemap + FAQ schema, indexed tracking |
 | 8 | Launch kit | **done** — PH / feature-drop / joint playbooks expand into dated jobs; posts pre-drafted from the brief; checklist taps; close writes results; sequencer proposes launches |
-| 9 | Relationship engine | next |
-| 10–12 | Site/onboarding, tool factory, learned judgment | |
+| 9 | Relationship engine | **done** — v1 joint launches brokered between companies on the product (match → both accept → linked launches); v2 warm outreach sequences to influencers/peers, reply cancels the rest |
+| 10 | Site and onboarding engine | next |
+| 11–12 | Tool factory, learned judgment | |
 
 ## Real LLM
 
@@ -132,6 +133,18 @@ POST /launches/{id}/close                     results from the metrics tables fo
 
 Playbook posts are drafted by the voice engine from the brief and land in the approval feed with the rest; checklist
 tasks complete on tap. Sequencer R8 proposes a launch (type + Tue/Wed date) when launches are in phase and none is open.
+
+## Relationship engine (Component 9)
+
+```
+GET  /companies/{id}/relationships/matches              other companies on the product: ICP adjacent (0.25-0.85), product not competing, readiness
+POST /companies/{id}/relationships/joint                {partner_company_id} -> proposal with a joint hook; visible to both founders
+POST /relationships/{id}/decide                         {company_id, accept} -> when both accept, a joint-v1 launch is created for each company
+GET  /companies/{id}/relationships/outreach/candidates  influencers / peers / communities from the attention map, not already in a sequence
+POST /companies/{id}/relationships/outreach             {founder_id, account_ids?|limit} -> 4-step warm sequence (reply d0, reply d3, DM d7, follow-up d14) as jobs in the feed
+POST /relationships/{id}/replied                        they answered: pending steps cancelled, state=replied
+GET  /companies/{id}/relationships?kind=                + outreach stats (reply rate; gate 25%)
+```
 
 ## Run it
 

@@ -37,7 +37,18 @@ def execute_job(job_id: str) -> str:
             log.warning("refusing to execute job %s in state %s", job_id, j.state)
             return "refused"
         try:
-            if j.type in ("post", "reply") and j.channel in ("linkedin", "x"):
+            if j.type == "outreach" and j.channel in ("linkedin", "x"):
+                # follow-up steps are conditional on silence; skip if the relationship already got a reply
+                from app.models import Relationship
+                rel = db.get(Relationship, uuid.UUID(j.input["relationship_id"])) if j.input.get("relationship_id") else None
+                if j.input.get("conditional") == "no_reply" and rel and rel.state in ("replied", "done"):
+                    j.state, j.error = "rejected", "skipped: they replied"
+                    db.commit()
+                    return "skipped"
+                res = get_social().publish(founder_id=str(j.founder_id), channel=j.channel,
+                                           text=j.output.get("text", ""), media=None, reply_to_ref=f"dm:{j.input.get('dm_to')}")
+                j.platform_ref = res.platform_ref
+            elif j.type in ("post", "reply") and j.channel in ("linkedin", "x"):
                 res = get_social().publish(
                     founder_id=str(j.founder_id), channel=j.channel,
                     text=j.output.get("text", ""), media=j.output.get("media"),
