@@ -15,8 +15,8 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 2 | Scorecard (Judgment v0) | **done** — 5 rule-scored channels, fix library, 90-day sequence, targets, HTML + PDF diagnostic |
 | 3 | Voice engine + approval feed (+ visuals) | **done** — transcript→claims→12 formats→voice-checked drafts→feed; scheduled publish; brand-colored data cards |
 | 4 | Attention map | **done** — ICP-seeded account map, fit score + clusters, daily reply targets in the feed, cooldowns |
-| 5 | Metrics and Friday report | next |
-| 6 | Sequencer (Judgment v1) | |
+| 5 | Metrics and Friday report | **done** — daily pull, impressions-inside-ICP (icp_v1), signup-source widget, weekly outcome row, Friday report + share card |
+| 6 | Sequencer (Judgment v1) | next |
 | 7–12 | Page factory, launch kit, relationships, site/onboarding, tool factory, learned judgment | |
 
 ## Real LLM
@@ -71,6 +71,22 @@ POST /founders/{id}/targets          {platforms[], per_platform} -> reply jobs (
 
 Targets favour buyers and influencers by ICP fit, skip anyone replied to in the last 7 days, and a reply that
 adds nothing (no experience, number, disagreement or question) is skipped rather than drafted.
+
+## Metrics and report (Component 5)
+
+```
+POST /companies/{id}/metrics/pull         daily: per-job stats + impressions_icp (method computed:icp_v1), followers, search, signups
+GET  /companies/{id}/report               weekly rollup JSON (this vs last week, top posts, approval/edit, signup sources)
+POST /companies/{id}/report/close-week    Friday: outcome row = plan targets vs actuals (the dataset)
+GET  /companies/{id}/report.html          the Friday email body
+GET  /companies/{id}/report/card.png      1200x630 share card: one number, one delta
+POST /public/{id}/signup-source           {answer, signup_id?} -> classified channel (no api key)
+GET  /public/{id}/signup-widget.js        one <script> tag; adds 'how did you hear about us?' to any form[data-me-signup]
+```
+
+impressions_icp = impressions x share of engaged accounts matching the attention map (>= 0.5 fit); a 20% prior
+is used and labelled when fewer than 5 engaged accounts are visible. The method id is on every row.
+Worker tasks: `daily_metrics_pull` (daily), `friday_close` (Fridays), alongside `publish_due`.
 
 ## Run it
 

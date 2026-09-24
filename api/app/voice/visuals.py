@@ -61,8 +61,8 @@ def quote_card(brand, platform, *, quote: str, attribution: str, footer: str = "
 TEMPLATES = {"number_card": number_card, "before_after": before_after, "steps": steps, "quote_card": quote_card}
 
 
-def render_png(html: str, platform: str) -> bytes:
-    w, h = SIZES[platform]
+def render_png(html: str, platform: str | None = None, size: tuple[int, int] | None = None) -> bytes:
+    w, h = size or SIZES[platform]
     with tempfile.TemporaryDirectory() as d:
         src, out, js = os.path.join(d, "c.html"), os.path.join(d, "c.png"), os.path.join(d, "r.js")
         open(src, "w").write(html)

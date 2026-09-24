@@ -72,3 +72,33 @@ def publish_due() -> int:
         if execute_job(jid) == "executed":
             n += 1
     return n
+
+
+def daily_metrics_pull() -> int:
+    """Run once a day per company (cron / rq-scheduler). Pulls stats for executed jobs and accounts."""
+    from sqlalchemy import select
+    from app.metrics.pull import pull_company
+    from app.models import Company
+    n = 0
+    with SessionLocal() as db:
+        for c in db.scalars(select(Company).where(Company.status == "active")).all():
+            pull_company(db, c)
+            n += 1
+    return n
+
+
+def friday_close() -> int:
+    """Friday: write outcome rows for every active company. Report emailing hooks in here
+    once an email provider is configured (Component 5 ships the HTML; delivery is config)."""
+    from sqlalchemy import select
+    from app.metrics.report import write_outcome
+    from app.models import Company
+    n = 0
+    with SessionLocal() as db:
+        for c in db.scalars(select(Company).where(Company.status == "active")).all():
+            try:
+                write_outcome(db, c)
+                n += 1
+            except ValueError:
+                log.warning("no plan for %s; skipping outcome", c.name)
+    return n
