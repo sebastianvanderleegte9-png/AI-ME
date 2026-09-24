@@ -17,8 +17,9 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 4 | Attention map | **done** — ICP-seeded account map, fit score + clusters, daily reply targets in the feed, cooldowns |
 | 5 | Metrics and Friday report | **done** — daily pull, impressions-inside-ICP (icp_v1), signup-source widget, weekly outcome row, Friday report + share card |
 | 6 | Sequencer (Judgment v1) | **done** — Monday re-plan from the outcome row; 8 named rules; settings steer the voice engine; overrides logged |
-| 7 | Page factory | next |
-| 8–12 | Launch kit, relationships, site/onboarding, tool factory, learned judgment | |
+| 7 | Page factory | **done** — 3 templates, ICP/product-driven candidates, data-point-required generation, batch approval, hosted pages + sitemap + FAQ schema, indexed tracking |
+| 8 | Launch kit | next |
+| 9–12 | Relationships, site/onboarding, tool factory, learned judgment | |
 
 ## Real LLM
 
@@ -102,6 +103,21 @@ under 70% cuts volume and weights approved formats · R4 edit rate over 20% flag
 weeks with good approval shifts to ICP-reaching formats and adds replies · R6 momentum holds the mix · R7 search
 in phase + data asset schedules a page batch · R8 launches in phase opens the launch kit. The interview endpoint
 picks up the week's settings automatically.
+
+## Page factory (Component 7)
+
+```
+GET  /page-templates                          product_for_segment · competitor_alternative · use_case_with_data
+POST /companies/{id}/pages/propose            {data_points:[{stat, source, tags[]}], limit} -> ranked candidates
+POST /companies/{id}/pages/generate           same body (+ slugs? subset) -> drafts; rejected if < 350 words, banned phrase, or no data point in the text
+GET  /companies/{id}/pages?status=            draft | published | indexed
+POST /companies/{id}/pages/batch              {page_ids[], approve} -> publish or discard (the founder's one tap per batch)
+POST /companies/{id}/pages/indexed            [slugs] -> mark indexed (Search Console hook)
+GET  /p/{id}/{slug}   GET /p/{id}/sitemap.xml  public; drafts are never served
+```
+
+Rule: no data point, no page. Candidates are segments x personas x competitors x features from the ICP and product
+summary; tagged data points route to matching pages.
 
 ## Run it
 
