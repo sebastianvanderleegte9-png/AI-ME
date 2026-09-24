@@ -18,6 +18,8 @@ def create_company(body: CompanyIn, db: Session = Depends(get_db)):
     db.add(c)
     db.commit()
     db.refresh(c)
+    from ..learning.experiment import assign
+    assign(db, c)
     return c
 
 

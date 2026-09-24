@@ -33,6 +33,7 @@ class FakeLLM(LLM):
     between identical texts is 1.0 and between different texts is low."""
 
     DIM = 1536
+    FAKE_EMBEDDINGS = True
 
     def complete(self, system, user, *, purpose, model=None, temperature=0.4, max_tokens=1024, json_mode=False):
         if json_mode:

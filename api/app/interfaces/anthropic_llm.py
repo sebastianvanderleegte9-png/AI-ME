@@ -15,6 +15,8 @@ MODELS = {
 
 
 class AnthropicLLM(LLM):
+    FAKE_EMBEDDINGS = True   # until a real embedding provider is wired (see embed())
+
     def __init__(self, api_key: str):
         import anthropic
         self._client = anthropic.Anthropic(api_key=api_key)

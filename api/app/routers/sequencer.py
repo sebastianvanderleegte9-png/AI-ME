@@ -38,7 +38,16 @@ def _out(plan: Plan):
 def replan(company_id: uuid.UUID, week_start: date | None = None, db: Session = Depends(get_db)):
     """Monday: re-plan from last week's outcome. Idempotent per week."""
     c = _company(company_id, db)
-    return _out(commit_week(db, c, plan_week(db, c, week_start)))
+    from ..learning import experiment, planner
+    engine = experiment.engine_for(db, c)
+    if engine == "learned":
+        wp, _ = planner.propose(db, c, week_start)
+    else:
+        wp = plan_week(db, c, week_start)
+        wp.settings["planner"] = "rules"
+    out = _out(commit_week(db, c, wp))
+    out["engine"] = engine
+    return out
 
 
 @router.get("")

@@ -147,8 +147,8 @@ def _fake_draft(claim: dict, fmt: str, platform: str, hi: int) -> str:
     shapes = {
         "contrarian_take": f"most people think the opposite.\n\n{body}.\n\nwe learned that the hard way.",
         "number_with_lesson": f"{claim.get('number') or 'one number'}.\n\n{body}.\n\nthat's the whole lesson.",
-        "question": f"{body}?\n\nwe think yes. curious what you've seen.",
-        "list": f"three things about this:\n\n1. {body}\n2. it took longer than expected\n3. it was worth it",
+        "question": f"{body}?\n\nwe think yes. what has your experience been.",
+        "list": f"three things we learned\n\n1. {body}\n2. it took longer than we planned\n3. we would do it again",
     }
     t = shapes.get(fmt, f"{body}.\n\nhere is what we did about it.")
     return t[:hi]

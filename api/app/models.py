@@ -238,3 +238,24 @@ class ToolEvent(Base):
     kind: Mapped[str] = mapped_column(Text)
     payload: Mapped[dict] = mapped_column(JSONB, default=dict)
     created_at: Mapped[datetime] = _ts()
+
+
+class ExperimentArm(Base):
+    __tablename__ = "experiment_arm"
+    company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("company.id", ondelete="CASCADE"), primary_key=True)
+    arm: Mapped[str] = mapped_column(Text)
+    assigned_at: Mapped[datetime] = _ts()
+    experiment: Mapped[str] = mapped_column(Text, default="judgment-v2-vs-rules-v1")
+
+
+class CompanyWeek(Base):
+    __tablename__ = "company_week"
+    id: Mapped[uuid.UUID] = _uuid()
+    company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("company.id", ondelete="CASCADE"))
+    week_start: Mapped[date] = mapped_column(Date)
+    arm: Mapped[str | None] = mapped_column(Text)
+    features: Mapped[dict] = mapped_column(JSONB, default=dict)
+    settings: Mapped[dict] = mapped_column(JSONB, default=dict)
+    result: Mapped[dict] = mapped_column(JSONB, default=dict)
+    created_at: Mapped[datetime] = _ts()
+    updated_at: Mapped[datetime] = _ts()

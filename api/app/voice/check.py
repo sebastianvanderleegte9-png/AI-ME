@@ -46,8 +46,9 @@ def check(text: str, *, banned: list[str], samples: list[str], casing: str | Non
     penalty = sum(w for name, _, w in SLOP_PATTERNS if name in pattern_hits)
 
     sim = None
-    if samples:
-        llm = get_llm()
+    llm = get_llm()
+    if samples and not getattr(llm, "FAKE_EMBEDDINGS", False):
+        # hashed fake embeddings carry no authorship signal; skip similarity so the fake path is neutral
         vecs = llm.embed([text] + samples[:20], purpose="voice_check")
         sims = [_cos(vecs[0], v) for v in vecs[1:]]
         sim = max(sims) if sims else None

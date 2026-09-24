@@ -108,7 +108,9 @@ def friday_close() -> int:
     with SessionLocal() as db:
         for c in db.scalars(select(Company).where(Company.status == "active")).all():
             try:
-                write_outcome(db, c)
+                o = write_outcome(db, c)
+                from app.learning.dataset import build_week
+                build_week(db, c, o.week_start)
                 n += 1
             except ValueError:
                 log.warning("no plan for %s; skipping outcome", c.name)

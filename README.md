@@ -4,7 +4,7 @@ The marketing engineer as software. A founder connects their product, ICP and ac
 product decides what to build first, writes in the founder's voice, maps where the ICP pays
 attention, generates pages from product data, runs launches, and reports one number every Friday.
 
-Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it component by component.
+Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. All twelve components are built; what remains is real providers (Anthropic key, LinkedIn/X apps, Search Console, an embedding provider, email), deployment, and design partners.
 
 ## Status
 
@@ -22,7 +22,7 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 9 | Relationship engine | **done** — v1 joint launches brokered between companies on the product (match → both accept → linked launches); v2 warm outreach sequences to influencers/peers, reply cancels the rest |
 | 10 | Site and onboarding engine | **done** — 40-check audit (clarity / action / first session / trust), rewrites as site_change jobs, hosted variant + CMS export, activation tracking, scorecard reads the audit |
 | 11 | Tool factory | **done** — three ideas/quarter from data assets + ICP questions; validated specs (calculator / scorecard / generator / lookup); one-page hosted tools with a safe evaluator; lead capture into signup_source; distribution posts; view/run/lead stats |
-| 12 | Learned judgment | next |
+| 12 | Learned judgment | **done** — company-week dataset from outcomes; k-NN planner over similar company-weeks (cites its neighbours, abstains under 8); blind A/B arms; Welch's t-test evaluation; promotion gated on a win |
 
 ## Real LLM
 
@@ -174,6 +174,22 @@ POST  /public/tools/{id}/event           view | run | lead (leads also become si
 ```
 
 Sequencer R9 proposes tools when search or launches are in phase and none is live.
+
+## Learned judgment (Component 12)
+
+```
+GET  /learning/dataset                          rows / companies / readiness (100 companies, 800 weeks)
+POST /learning/dataset/build?week_start=        rebuild company_week rows for a week (Friday close does this automatically)
+GET  /learning/companies/{id}/neighbours        the K most similar company-weeks (ICP cosine, stage, prior approval), never the company's own
+POST /learning/companies/{id}/preview           what learned-v2.0 would do this week, with the neighbours it drew on; no commit
+GET  /learning/experiment                       learned vs rules: n per arm, mean 4-week growth, Welch t and p, verdict, default engine
+POST /learning/experiment/assign/{id}?arm=      (companies are auto-assigned by hash at creation)
+POST /learning/experiment/default               {engine} -> promotion to learned is refused unless the experiment says it wins
+```
+
+The learned planner starts from the rules plan (hard rules R2/R3/R4 stay) and adopts the settings of the best-growing
+30% among its neighbours. The Monday re-plan runs whichever engine `engine_for(company)` returns: the promoted default,
+else the company's blind arm. Everything is auditable: every learned decision names its neighbours and their growth.
 
 ## Run it
 

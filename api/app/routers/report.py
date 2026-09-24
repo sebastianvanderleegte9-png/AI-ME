@@ -39,7 +39,10 @@ def report_json(company_id: uuid.UUID, week_of: date | None = None, db: Session 
 def close_week(company_id: uuid.UUID, week_of: date | None = None, db: Session = Depends(get_db)):
     """Friday: write the outcome row (plan vs actual). This is the dataset."""
     try:
-        o = write_outcome(db, _company(company_id, db), week_of)
+        c = _company(company_id, db)
+        o = write_outcome(db, c, week_of)
+        from ..learning.dataset import build_week
+        build_week(db, c, o.week_start)
     except ValueError as e:
         raise HTTPException(422, str(e))
     return {"outcome_id": str(o.id), "week_start": str(o.week_start), "targets": o.targets, "actuals": o.actuals,
