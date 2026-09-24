@@ -91,42 +91,40 @@ def page() -> str:
 
 <header class="hero"><div class="wrap">
 <div>
-<div class="eyebrow">The growth hire every startup is looking for</div>
-<h1>Your marketing engineer, <em>over text.</em></h1>
-<p class="sub">Send {n} one voice memo a week. It turns it into posts in your voice, replies where your buyers already are, outreach, launches and pages. You approve by text. Every Friday: one number.</p>
+<div class="eyebrow">The full growth hire, not a content tool</div>
+<h1>{n} is your <em>marketing engineer.</em></h1>
+<p class="sub">Growth on LinkedIn and X, replies where your buyers already are, outbound to real prospects, launches, pages and site fixes — one system, run from a weekly voice memo and a text thread. Not a scheduler. The whole job.</p>
 <div class="cta"><a class="btn big" href="/start">Get your free growth scorecard →</a><a class="btn ghost big" href="#how">How it works</a></div>
 <div class="fine">Ten-minute setup · no card until you've seen the scorecard · nothing posts without your yes</div>
-<div class="proof"><div><b>10 min</b><span>a week from you</span></div><div><b>9</b><span>channels scored, free</span></div><div><b>0</b><span>posts without your yes</span></div></div>
+<div class="proof"><div><b>10 min</b><span>a week from you</span></div><div><b>9</b><span>growth channels, scored</span></div><div><b>0</b><span>posts or DMs without your yes</span></div></div>
 </div>
 <div class="phone"><div class="t">Today 8:00 AM</div>
 <div class="msg in">Morning, Noah. 4 things:
 1. Post (LinkedIn): "1,300 users onboarded in six weeks. Here is what broke."
 2. Reply to Sarah K. (COO, 40k followers) on AI ops
 3. Post (X): the four-hours-per-week line
-4. DM: Dan at Northwind, warm intro from Tuesday's thread
+4. Outreach: Dan at Northwind — warm intro from Tuesday's thread
 Reply yes 1 3, no 2, or type an edit.</div>
 <div class="msg out">yes 1 3 4</div>
-<div class="msg in">Done. 1 goes out at 11:10 (your audience's peak). 3 at 2:40. DM sent. #2 kept for tomorrow.</div>
-<div class="msg out">2 → shorter, lead with the number</div>
-<div class="msg in">Rewritten. "40% of signups never finished onboarding. Here is the fix that took nine weeks, not two." Post it?</div>
-<div class="msg out">yes</div></div>
+<div class="msg in">Done. 1 goes out at 11:10 (your audience's peak). 3 at 2:40. Outreach sent to Dan. #2 kept for tomorrow.</div>
+<div class="msg in">Dan replied: "interested, can we talk this week?" Handing you the thread — he's ready to book.</div></div>
 </div></header>
 
 <section id="how"><div class="wrap"><h2>How it works</h2><p class="lead">You already know what happened this week. Saying it out loud is the whole job.</p>
 <div class="grid g3">
 <div class="card"><div class="num">01 · ONCE</div><h3>Ten-minute setup</h3><p>Company, three best customers, connect LinkedIn and X, your phone. You get a free growth scorecard: nine channels scored, the biggest gap named, your first two weeks planned.</p></div>
 <div class="card"><div class="num">02 · WEEKLY</div><h3>One voice memo</h3><p>Ten minutes, whenever. What shipped, what a customer said, what you got wrong, what you believe. {n} pulls the claims and drafts the week in your voice, not "AI voice".</p></div>
-<div class="card"><div class="num">03 · DAILY</div><h3>Approve by text</h3><p>A numbered brief every morning. yes 1 3, no 2, or type an edit. It schedules, posts, replies, follows up. Friday it texts you the one number that matters and what changed it.</p></div>
+<div class="card"><div class="num">03 · DAILY</div><h3>Approve by text</h3><p>A numbered brief every morning: posts, replies, outreach. yes 1 3, no 2, or edit. It schedules, posts, follows up, and hands you real replies to close. Friday: one number.</p></div>
 </div></div></section>
 
-<section id="formula"><div class="wrap"><h2>What a marketing engineer does. All of it.</h2><p class="lead">This is the job description going around every startup. Each line is a working part of {n}, not a slide.</p>
+<section id="formula"><div class="wrap"><h2>What a marketing engineer does. All of it.</h2><p class="lead">Not a content calendar with a chatbot on top. Every line below is a system running in {n}, not a slide.</p>
 <div class="grid g2 formula">
 <div class="card"><div class="k">01</div><div><h3>Judgment on what to build first</h3><p>Scores content, SEO, social, email, launches, community, partners, product-led and ads for <i>your</i> company, sequences the fixes, and re-plans every Monday from last week's numbers.</p></div></div>
 <div class="card"><div class="k">02</div><div><h3>Founder voice, not brand voice</h3><p>Learns how you actually write from your own posts. Every draft is checked against it; anything that reads like a bot is rejected before you ever see it.</p></div></div>
 <div class="card"><div class="k">03</div><div><h3>Goes where the attention already is</h3><p>Maps the accounts your buyers actually read and reply to, then puts you in those threads daily. Reach follows replies.</p></div></div>
 <div class="card"><div class="k">04</div><div><h3>Measures what matters</h3><p>Impressions inside your ICP, not vanity totals. Signups tied to the post that caused them. One number, every Friday.</p></div></div>
 <div class="card"><div class="k">05</div><div><h3>Ships pages and launches</h3><p>Comparison, use-case and integration pages built from your real claims. Launch kits with the posts, the DMs and the day-by-day plan.</p></div></div>
-<div class="card"><div class="k">06</div><div><h3>Relationships and outreach</h3><p>Warm, sequenced, conditional on silence. Joint posts with founders who share your buyer. Every DM waits for your yes.</p></div></div>
+<div class="card"><div class="k">06</div><div><h3>Outreach and client acquisition</h3><p>Finds real prospects who match your customers, opens warm, follows up if they go quiet, stops the moment they reply. A reply comes straight to your phone to close — no lead sits in a CRM no one opens.</p></div></div>
 <div class="card"><div class="k">07</div><div><h3>Fixes your site</h3><p>Audits the signup field, the proof, the speed, the message; proposes the change; ships it when you tap.</p></div></div>
 <div class="card"><div class="k">08</div><div><h3>Builds small tools</h3><p>Calculators, checkers, graders your buyers will use and share. Proposed by text, built when you say build 2.</p></div></div>
 </div></div></section>
