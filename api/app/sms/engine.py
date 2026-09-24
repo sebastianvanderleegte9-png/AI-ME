@@ -14,7 +14,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..interfaces import get_messaging, get_transcription
-from ..models import Company, Founder, Job, Launch, Relationship, SmsMessage, SmsState, Tool
+from ..models import Company, Founder, Job, Launch, Meeting, Relationship, SmsMessage, SmsState, Tool
 from ..settings import settings
 from . import render
 
@@ -87,6 +87,8 @@ def pending_items(db: Session, f: Founder, limit: int = 8) -> list[dict]:
             title, meta = f"Launch: {i.get('title')}", f"T{i.get('day', 0):+d}"
         elif j.type == "site_change":
             title, meta = f"Site fix: {i.get('label')}", None
+        elif j.channel == "email":
+            title, meta = f"Email to {i.get('prospect_name') or i.get('prospect_email')}", i.get("prospect_company")
         else:
             title, meta = f"DM to @{i.get('handle')}", i.get("cluster")
         items.append({"n": n, "kind": j.type, "job_id": str(j.id), "title": title, "meta": meta})
@@ -95,6 +97,7 @@ def pending_items(db: Session, f: Founder, limit: int = 8) -> list[dict]:
 
 def send_brief(db: Session, f: Founder) -> SmsMessage:
     items = pending_items(db, f)
+    from ..meetings.engine import today_confirmed
     from ..models import Plan
     ws = (datetime.now(timezone.utc).date() - timedelta(days=datetime.now(timezone.utc).weekday()))
     p = db.scalars(select(Plan).where(Plan.company_id == f.company_id, Plan.week_start == ws)).first()
@@ -102,7 +105,8 @@ def send_brief(db: Session, f: Founder) -> SmsMessage:
     last_memo = db.scalars(select(SmsMessage).where(SmsMessage.founder_id == f.id, SmsMessage.kind == "voice")
                            .order_by(SmsMessage.created_at.desc())).first()
     memo_due = not last_memo or (datetime.now(timezone.utc) - last_memo.created_at.replace(tzinfo=timezone.utc)) > timedelta(days=6)
-    return send(db, f, render.brief(f.name, items, focus, memo_due), "brief", {"job_ids": [i["job_id"] for i in items]},
+    meetings = today_confirmed(db, f)
+    return send(db, f, render.brief(f.name, items, focus, memo_due, meetings, f.timezone), "brief", {"job_ids": [i["job_id"] for i in items]},
                 current={}, batch=items)
 
 
@@ -123,6 +127,11 @@ def send_joint(db: Session, f: Founder, rel: Relationship) -> SmsMessage:
     partner = db.get(Company, rel.partner_company_id if rel.company_id == f.company_id else rel.company_id)
     return send(db, f, render.joint(rel, partner.name if partner else "a partner"), "joint", {"relationship_id": str(rel.id)},
                 current={"kind": "joint", "relationship_id": str(rel.id)})
+
+
+def send_meeting_decision(db: Session, f: Founder, meeting: Meeting) -> SmsMessage:
+    return send(db, f, render.meeting_decision(meeting), "meeting", {"meeting_id": str(meeting.id)},
+                current={"kind": "meeting", "meeting_id": str(meeting.id)})
 
 
 def send_friday(db: Session, f: Founder) -> SmsMessage:
@@ -322,6 +331,21 @@ def handle_inbound(db: Session, payload: dict) -> list[str]:
         st.current = {}; db.commit(); return out
     if cur.get("kind") == "tools" and low in NO | {"skip"}:
         st.current = {}; db.commit(); reply("Skipped."); return out
+    if cur.get("kind") == "meeting":
+        m = db.get(Meeting, uuid.UUID(cur["meeting_id"]))
+        if not m or m.state != "awaiting_founder":
+            reply(render.nothing_pending()); st.current = {}; db.commit(); return out
+        if low in YES:
+            from ..meetings.engine import confirm
+            m = confirm(db, m)
+            reply(render.meeting_confirmed(m, f.timezone))
+        elif low in NO:
+            from ..meetings.engine import decline_and_reschedule
+            m = decline_and_reschedule(db, m)
+            reply("Declined that time." + (" New times sent." if m.state == "sent" else " Ran out of good options — I've marked it declined; text me if you want to try again."))
+        else:
+            reply(render.clarify(["yes to confirm", "no to try other times"])); return out
+        st.current = {}; db.commit(); return out
 
     # nothing in context: a bare yes/no shows the next undecided item rather than guessing
     if low in YES | NO | DONE:

@@ -61,6 +61,20 @@ def execute_job(job_id: str) -> str:
                     text=j.output.get("text", ""), media=j.output.get("media"),
                     reply_to_ref=j.input.get("reply_to_ref"))
                 j.platform_ref = res.platform_ref
+            elif j.type == "outreach" and j.channel == "email":
+                from app.interfaces import get_email
+                from app.interfaces.tokens import access_token
+                from app.models import Founder
+                f = db.get(Founder, j.founder_id)
+                token = access_token(db, j.founder_id, "outlook")
+                if not token:
+                    j.state, j.error = "failed", "Outlook isn't connected — connect it from your account page to send outreach email."
+                    db.commit()
+                    return "failed"
+                res = get_email().send(token, from_name=f.name, to_email=j.input.get("prospect_email"),
+                                       to_name=j.input.get("prospect_name"), subject=j.input.get("subject", ""),
+                                       body_html=j.output.get("text", "").replace(chr(10), "<br>"))
+                j.platform_ref = res.message_ref
             else:
                 # Other job types get their executors in later components.
                 j.platform_ref = f"internal-{uuid.uuid4().hex[:8]}"

@@ -24,6 +24,7 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. All twelve components a
 | 11 | Tool factory | **done** — three ideas/quarter from data assets + ICP questions; validated specs (calculator / scorecard / generator / lookup); one-page hosted tools with a safe evaluator; lead capture into signup_source; distribution posts; view/run/lead stats |
 | 13 | SMS surface | **done** — phone link + verify; voice memo → drafts; numbered morning brief; yes/no/edit/batch by text; tool builds, joint proposals, plan changes; Friday number; pause; Twilio + Whisper providers behind fakes |
 | 14 | Web onboarding + billing | **done** — `/start` → 8-step wizard (company, customers, LinkedIn/X OAuth, phone verify by text, schedule mode, free diagnostic, Stripe Checkout, live); subscription drives `company.status`; lapsed card holds posting; encrypted tokens; account page |
+| 15 | Outlook email + meetings | **done** — personalized outreach email over the founder's own Outlook (same approval feed as posts); a positive reply auto-proposes times from the real calendar; public booking page; founder approves/denies by text; deny reschedules automatically; approve creates the calendar event; morning brief maps the day |
 | 12 | Learned judgment | **done** — company-week dataset from outcomes; k-NN planner over similar company-weeks (cites its neighbours, abstains under 8); blind A/B arms; Welch's t-test evaluation; promotion gated on a win |
 
 ## Real LLM
@@ -237,6 +238,41 @@ GET  /setup-sessions                         admin: where every signup is stuck
 - Providers: `BILLING_PROVIDER=fake|stripe` (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_FOUNDER|TEAM|GROWTH`), `OAUTH_PROVIDER=fake|real` (`LINKEDIN_CLIENT_ID/SECRET`, `X_CLIENT_ID/SECRET`), `TOKEN_ENCRYPTION_KEY` (Fernet; the dev default must be replaced), `PUBLIC_BASE_URL`.
 - Brand: `SITE_NAME` (Aime), `SITE_FONT` (any Google Fonts family, default Figtree), `SITE_FONT_WEIGHTS`, `FONT_CSS_BASE` (default `https://api.fonts.coollabs.io/css2`, the privacy-friendly Google Fonts mirror; point it at your own instance of that service to self-host). Palette lives in `onboarding/site.py:BRAND_CSS`.
 - Plans: Founder $500, Team $1,500, Growth $5,000 per month (`interfaces/billing_oauth.py:PLANS`).
+
+## Outlook email outreach and meeting scheduling (Component 15)
+
+Calendar and email are Outlook, connected the same way as LinkedIn/X (Component 14's OAuth, a third
+platform, Fernet-encrypted token). Nothing here bypasses the approval feed or books anything on its
+own — a human always says yes twice: once to send the email, once to put the meeting on the calendar.
+
+```
+POST /companies/{id}/relationships/email-outreach   {founder_id, prospects:[{name,email,company?,why}]}
+                                                      -> one pending Job per prospect (type=outreach, channel=email)
+POST /jobs/{job_id}/interested                       the prospect replied wanting to talk -> proposes 3 times by email
+GET  /meetings/{id}                                  admin view (state, slots, booking link)
+GET  /companies/{id}/meetings                        admin list
+GET  /book/{token}                                   public booking page, no login — the prospect picks a time
+POST /book/{token}/{slot}                            records the pick, texts the founder to approve or deny
+```
+
+- **Email outreach is a Job like everything else.** It shows up in the morning brief ("Email to Dana Lee"),
+  `yes 1 3` sends it, `no 2` drops it, free text edits it. `execute_job` sends it through the founder's own
+  Outlook (`get_email().send`); if Outlook isn't connected yet the job fails with a clear reason instead of
+  silently doing nothing.
+- **Proposing times** (`meetings/engine.py:slots_for`) reads real free/busy from Outlook when connected
+  (business hours, next 10 weekdays, skipping anything already on the calendar) or falls back to a plain
+  business-hours heuristic when it isn't. The email is personalized and voice-checked like every other draft.
+- **Booking is two yeses.** The prospect picks a time on a public page (the `booking_token` is the only
+  credential, same pattern as setup). That texts the founder — nothing is confirmed yet. A yes creates the
+  calendar event (`Calendar.create_event`) and emails the prospect a confirmation. A no regenerates fresh
+  times and re-emails automatically (capped at 3 rounds), so the founder never has to manually chase a
+  reschedule.
+- **The morning brief maps the day first**: today's confirmed meetings, in the founder's timezone, before
+  the numbered approval list.
+- Providers: `CALENDAR_PROVIDER=fake|microsoft`, `EMAIL_PROVIDER=fake|microsoft`, `MS_CLIENT_ID`,
+  `MS_CLIENT_SECRET`, `MS_TENANT` (default `common`, works for personal and work Microsoft accounts).
+  Both real providers call Microsoft Graph with the founder's own delegated token — never an app-level
+  mailbox.
 
 ## Run it
 

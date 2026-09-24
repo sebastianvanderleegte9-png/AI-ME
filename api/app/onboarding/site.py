@@ -96,7 +96,7 @@ def page() -> str:
 <p class="sub">Growth on LinkedIn and X, replies where your buyers already are, outbound to real prospects, launches, pages and site fixes — one system, run from a weekly voice memo and a text thread. Not a scheduler. The whole job.</p>
 <div class="cta"><a class="btn big" href="/start">Get your free growth scorecard →</a><a class="btn ghost big" href="#how">How it works</a></div>
 <div class="fine">Ten-minute setup · no card until you've seen the scorecard · nothing posts without your yes</div>
-<div class="proof"><div><b>10 min</b><span>a week from you</span></div><div><b>9</b><span>growth channels, scored</span></div><div><b>0</b><span>posts or DMs without your yes</span></div></div>
+<div class="proof"><div><b>10 min</b><span>a week from you</span></div><div><b>9</b><span>growth channels, scored</span></div><div><b>0</b><span>posts, emails or meetings booked without your yes</span></div></div>
 </div>
 <div class="phone"><div class="t">Today 8:00 AM</div>
 <div class="msg in">Morning, Noah. 4 things:
@@ -107,14 +107,17 @@ def page() -> str:
 Reply yes 1 3, no 2, or type an edit.</div>
 <div class="msg out">yes 1 3 4</div>
 <div class="msg in">Done. 1 goes out at 11:10 (your audience's peak). 3 at 2:40. Outreach sent to Dan. #2 kept for tomorrow.</div>
-<div class="msg in">Dan replied: "interested, can we talk this week?" Handing you the thread — he's ready to book.</div></div>
+<div class="msg in">Dan replied: "interested, can we talk this week?" Proposing 3 times from your calendar now — I'll text you when he picks one.</div>
+<div class="msg in">Dan picked Thu 2:00pm for "Quick chat — Aime". yes to confirm / no for other times.</div>
+<div class="msg out">yes</div>
+<div class="msg in">Confirmed. On your calendar and his.</div></div>
 </div></header>
 
 <section id="how"><div class="wrap"><h2>How it works</h2><p class="lead">You already know what happened this week. Saying it out loud is the whole job.</p>
 <div class="grid g3">
 <div class="card"><div class="num">01 · ONCE</div><h3>Ten-minute setup</h3><p>Company, three best customers, connect LinkedIn and X, your phone. You get a free growth scorecard: nine channels scored, the biggest gap named, your first two weeks planned.</p></div>
 <div class="card"><div class="num">02 · WEEKLY</div><h3>One voice memo</h3><p>Ten minutes, whenever. What shipped, what a customer said, what you got wrong, what you believe. {n} pulls the claims and drafts the week in your voice, not "AI voice".</p></div>
-<div class="card"><div class="num">03 · DAILY</div><h3>Approve by text</h3><p>A numbered brief every morning: posts, replies, outreach. yes 1 3, no 2, or edit. It schedules, posts, follows up, and hands you real replies to close. Friday: one number.</p></div>
+<div class="card"><div class="num">03 · DAILY</div><h3>Approve by text, day mapped for you</h3><p>Every morning: your calendar for the day, then a numbered brief of posts, replies and outreach. yes 1 3, no 2, or edit. Meeting requests text you separately the moment a prospect books — yes puts it on your calendar.</p></div>
 </div></div></section>
 
 <section id="formula"><div class="wrap"><h2>What a marketing engineer does. All of it.</h2><p class="lead">Not a content calendar with a chatbot on top. Every line below is a system running in {n}, not a slide.</p>
@@ -124,7 +127,7 @@ Reply yes 1 3, no 2, or type an edit.</div>
 <div class="card"><div class="k">03</div><div><h3>Goes where the attention already is</h3><p>Maps the accounts your buyers actually read and reply to, then puts you in those threads daily. Reach follows replies.</p></div></div>
 <div class="card"><div class="k">04</div><div><h3>Measures what matters</h3><p>Impressions inside your ICP, not vanity totals. Signups tied to the post that caused them. One number, every Friday.</p></div></div>
 <div class="card"><div class="k">05</div><div><h3>Ships pages and launches</h3><p>Comparison, use-case and integration pages built from your real claims. Launch kits with the posts, the DMs and the day-by-day plan.</p></div></div>
-<div class="card"><div class="k">06</div><div><h3>Outreach and client acquisition</h3><p>Finds real prospects who match your customers, opens warm, follows up if they go quiet, stops the moment they reply. A reply comes straight to your phone to close — no lead sits in a CRM no one opens.</p></div></div>
+<div class="card"><div class="k">06</div><div><h3>Outreach, meetings, client acquisition</h3><p>Personalized emails from your own Outlook to real prospects. The moment one replies interested, it proposes times from your actual calendar, the prospect books, and it only goes on the calendar once you text yes.</p></div></div>
 <div class="card"><div class="k">07</div><div><h3>Fixes your site</h3><p>Audits the signup field, the proof, the speed, the message; proposes the change; ships it when you tap.</p></div></div>
 <div class="card"><div class="k">08</div><div><h3>Builds small tools</h3><p>Calculators, checkers, graders your buyers will use and share. Proposed by text, built when you say build 2.</p></div></div>
 </div></div></section>
@@ -146,6 +149,7 @@ Reply yes 1 3, no 2, or type an edit.</div>
 <details><summary>Are LinkedIn and X posts different?</summary><p>Yes. Same claim, different shape: a story on LinkedIn, a single sharp line on X. Both in your voice.</p></details>
 <details><summary>Do I have to be on the schedule?</summary><p>No. Pick "we manage the schedule" and it posts at your audience's active hours once you've approved the words. Or approve the time too.</p></details>
 <details><summary>What if I don't answer for a week?</summary><p>Nothing goes out. It waits. The brief keeps coming until you text pause.</p></details>
+<details><summary>Does it book meetings on my calendar automatically?</summary><p>No — it proposes times from your real Outlook calendar, the prospect picks one, and it only creates the calendar event after you text yes. A no gets fresh times sent automatically, no extra work from you.</p></details>
 </div></section>
 
 <section class="final"><div class="wrap"><h2>See your growth score in ten minutes.</h2><p class="lead">Free, before any card. Then decide.</p><a class="btn big" href="/start">Get your free scorecard →</a></div></section>

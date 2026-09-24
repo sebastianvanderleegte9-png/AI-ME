@@ -142,7 +142,7 @@ async def post2(token: str, request: Request, db: Session = Depends(get_db)):
 
 @router.get("/setup/{token}/oauth/{platform}")
 def oauth_start(token: str, platform: str, db: Session = Depends(get_db)):
-    if platform not in ("linkedin", "x"):
+    if platform not in ("linkedin", "x", "outlook"):
         raise HTTPException(404)
     s = _sess(db, token)
     return RedirectResponse(flow.oauth_start(db, s, platform), status_code=303)

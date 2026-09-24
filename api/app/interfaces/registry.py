@@ -84,9 +84,26 @@ def get_billing():
 
 
 @lru_cache
+def get_calendar():
+    from .calendar_email import FakeCalendar, MicrosoftGraphCalendar
+    if settings.calendar_provider == "fake":
+        return FakeCalendar()
+    return MicrosoftGraphCalendar()
+
+
+@lru_cache
+def get_email():
+    from .calendar_email import FakeEmail, MicrosoftGraphEmail
+    if settings.email_provider == "fake":
+        return FakeEmail()
+    return MicrosoftGraphEmail()
+
+
+@lru_cache
 def get_oauth():
     from .billing_oauth import FakeOAuth, RealOAuth
     if settings.oauth_provider == "fake":
         return FakeOAuth()
     return RealOAuth((settings.linkedin_client_id, settings.linkedin_client_secret) if settings.linkedin_client_id else None,
-                     (settings.x_client_id, settings.x_client_secret) if settings.x_client_id else None)
+                     (settings.x_client_id, settings.x_client_secret) if settings.x_client_id else None,
+                     (settings.ms_client_id, settings.ms_client_secret, settings.ms_tenant) if settings.ms_client_id else None)

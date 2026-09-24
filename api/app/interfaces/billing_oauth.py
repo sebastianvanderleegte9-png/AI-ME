@@ -123,25 +123,37 @@ class OAuth(ABC):
     def exchange(self, *, platform: str, code: str, redirect_uri: str, verifier: str | None = None) -> OAuthResult: ...
 
 
+_SCOPES = {"linkedin": ["w_member_social"], "x": ["tweet.write", "tweet.read", "users.read"],
+           "outlook": ["Mail.Send", "Calendars.ReadWrite", "User.Read", "offline_access"]}
+
+
 class FakeOAuth(OAuth):
     def authorize_url(self, *, platform, state, redirect_uri):
         return f"{redirect_uri}?state={state}&code=fake-{platform}-code"
 
     def exchange(self, *, platform, code, redirect_uri, verifier=None):
-        return OAuthResult(platform=platform, handle=f"fake_{platform}_user", access_token=f"tok-{platform}-{secrets.token_hex(4)}",
-                           refresh_token="rt", expires_in=3600 * 24 * 60, scopes=["w_member_social"] if platform == "linkedin" else ["tweet.write", "tweet.read", "users.read"])
+        handle = f"fake_{platform}_user" if platform != "outlook" else "fake.founder@outlook.example"
+        return OAuthResult(platform=platform, handle=handle, access_token=f"tok-{platform}-{secrets.token_hex(4)}",
+                           refresh_token="rt", expires_in=3600 * 24 * 60, scopes=_SCOPES.get(platform, []))
 
 
 class RealOAuth(OAuth):
-    """LinkedIn (OAuth 2, 3-legged) and X (OAuth 2 with PKCE). Client ids/secrets from settings."""
-    def __init__(self, linkedin: tuple[str, str] | None, x: tuple[str, str] | None):
-        self.li, self.x = linkedin, x
+    """LinkedIn (OAuth 2, 3-legged), X (OAuth 2 with PKCE) and Microsoft/Outlook (OAuth 2,
+    authorization code, "common" tenant so personal and work accounts both work). Client
+    ids/secrets from settings."""
+    def __init__(self, linkedin: tuple[str, str] | None, x: tuple[str, str] | None, microsoft: tuple[str, str, str] | None = None):
+        self.li, self.x, self.ms = linkedin, x, microsoft
 
     def authorize_url(self, *, platform, state, redirect_uri):
         if platform == "linkedin":
             return "https://www.linkedin.com/oauth/v2/authorization?" + urlencode({
                 "response_type": "code", "client_id": self.li[0], "redirect_uri": redirect_uri, "state": state,
                 "scope": "openid profile w_member_social"})
+        if platform == "outlook":
+            tenant = self.ms[2] if self.ms else "common"
+            return f"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize?" + urlencode({
+                "response_type": "code", "client_id": self.ms[0], "redirect_uri": redirect_uri, "state": state, "response_mode": "query",
+                "scope": "offline_access Mail.Send Calendars.ReadWrite User.Read"})
         return "https://twitter.com/i/oauth2/authorize?" + urlencode({
             "response_type": "code", "client_id": self.x[0], "redirect_uri": redirect_uri, "state": state,
             "scope": "tweet.read tweet.write users.read offline.access", "code_challenge": "challenge", "code_challenge_method": "plain"})
@@ -155,6 +167,17 @@ class RealOAuth(OAuth):
             j = r.json()
             me = httpx.get("https://api.linkedin.com/v2/userinfo", headers={"Authorization": f"Bearer {j['access_token']}"}, timeout=20).json()
             return OAuthResult("linkedin", me.get("sub", ""), j["access_token"], j.get("refresh_token"), j.get("expires_in"), j.get("scope", "").split())
+        if platform == "outlook":
+            tenant = self.ms[2] if self.ms else "common"
+            r = httpx.post(f"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token", data={
+                "grant_type": "authorization_code", "code": code, "redirect_uri": redirect_uri,
+                "client_id": self.ms[0], "client_secret": self.ms[1],
+                "scope": "offline_access Mail.Send Calendars.ReadWrite User.Read"}, timeout=20)
+            r.raise_for_status()
+            j = r.json()
+            me = httpx.get("https://graph.microsoft.com/v1.0/me", headers={"Authorization": f"Bearer {j['access_token']}"}, timeout=20).json()
+            handle = me.get("mail") or me.get("userPrincipalName", "")
+            return OAuthResult("outlook", handle, j["access_token"], j.get("refresh_token"), j.get("expires_in"), j.get("scope", "").split())
         r = httpx.post("https://api.twitter.com/2/oauth2/token", auth=(self.x[0], self.x[1]), data={
             "grant_type": "authorization_code", "code": code, "redirect_uri": redirect_uri, "code_verifier": verifier or "challenge"}, timeout=20)
         r.raise_for_status()

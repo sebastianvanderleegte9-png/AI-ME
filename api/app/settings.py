@@ -46,6 +46,14 @@ class Settings(BaseSettings):
     x_client_id: str | None = None
     x_client_secret: str | None = None
     token_encryption_key: str = "zK3G3ml8tE6a4h0KZ0QW3M4aM9r1vZ8KIhG7z8W2lqg="   # dev only; set a real Fernet key in prod
+    ms_client_id: str | None = None
+    ms_client_secret: str | None = None
+    ms_tenant: str = "common"
+
+    # Calendar + email outreach (Component 15): personalized emails and meeting scheduling
+    # over the founder's own Outlook, connected the same way as LinkedIn/X.
+    calendar_provider: str = "fake"   # fake | microsoft
+    email_provider: str = "fake"      # fake | microsoft
 
 
 settings = Settings()

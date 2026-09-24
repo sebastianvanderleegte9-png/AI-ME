@@ -92,16 +92,18 @@ def step2(s, error=None) -> str:
 
 def step3(s) -> str:
     conn = set((s.data or {}).get("connected", []))
-    def row(p, label):
+    def row(p, label, desc):
         ok = p in conn
         return (f'<div class="opt"><div style="flex:1"><b>{label} {"<span class=tag ok>connected</span>" if ok else ""}</b>'
-                f'<small>{"We post in your name, only after you approve each one." if not ok else "You can disconnect any time from your account page."}</small></div>'
+                f'<small>{("You can disconnect any time from your account page." if ok else desc)}</small></div>'
                 f'<a class="btn {"ghost" if ok else ""}" style="margin:0" href="/setup/{e(s.token)}/oauth/{p}">{"Reconnect" if ok else "Connect"}</a></div>')
     return shell("Connect", f"""
 <h1>Connect your accounts</h1><p class="sub">Founder accounts, not company pages: that is where the attention is.</p>
-{row('linkedin', 'LinkedIn')}{row('x', 'X')}
+{row('linkedin', 'LinkedIn', 'We post in your name, only after you approve each one.')}
+{row('x', 'X', 'We post in your name, only after you approve each one.')}
+{row('outlook', 'Outlook', 'Optional. Lets it send personalized outreach emails from your address, read your free/busy time, and put confirmed meetings on your calendar.')}
 <form method="post" action="/setup/{e(s.token)}/3"><button class="{'' if conn else 'btn ghost'}">{'Continue →' if conn else 'Skip for now →'}</button></form>
-<p class="note">Tokens are encrypted at rest. The engineer only ever gets the permission to post and read replies.</p>""", 3)
+<p class="note">Tokens are encrypted at rest. It only ever gets the permission to post, read replies, and manage what you connect.</p>""", 3)
 
 
 def step4(s, sent: bool = False, code_hint: str | None = None, error=None) -> str:
@@ -193,13 +195,13 @@ def step8(s, first_text: str | None) -> str:
 
 def account(s, sub, founder, tokens: list, portal: str | None) -> str:
     status = sub.status if sub else "none"
-    conn = "".join(f'<li>{t.platform}: <b>@{e(t.handle or "")}</b></li>' for t in tokens) or "<li>none connected</li>"
+    conn = "".join(f'<li>{t.platform}: <b>{"" if t.platform == "outlook" else "@"}{e(t.handle or "")}</b></li>' for t in tokens) or "<li>none connected</li>"
     return shell("Account", f"""
 <h1>Account</h1><p class="sub">{e(s.email)}</p>
 <h2>Subscription <span class="tag {'ok' if status in ('active','trialing') else ''}">{e(status)}</span></h2>
 <p>{e((sub.plan.title() + ' plan') if sub else 'No plan yet')}{(' · renews ' + sub.current_period_end.date().isoformat()) if sub and sub.current_period_end else ''}</p>
 {f'<a class="btn ghost" href="{e(portal)}">Manage billing</a>' if portal else ''}
 <h2>Connected</h2><ul class="list">{conn}</ul>
-<a class="btn ghost" href="/setup/{e(s.token)}/oauth/linkedin">Reconnect LinkedIn</a> <a class="btn ghost" href="/setup/{e(s.token)}/oauth/x">Reconnect X</a>
+<a class="btn ghost" href="/setup/{e(s.token)}/oauth/linkedin">Reconnect LinkedIn</a> <a class="btn ghost" href="/setup/{e(s.token)}/oauth/x">Reconnect X</a> <a class="btn ghost" href="/setup/{e(s.token)}/oauth/outlook">Connect Outlook</a>
 <h2>Phone</h2><p>{e(founder.phone or '')} {'<span class="tag ok">verified</span>' if founder.phone_verified_at else ''} · schedule: <b>{e(founder.schedule_mode)}</b></p>
 <p class="note">Text <code>pause</code> to stop the briefs, <code>resume</code> to restart, <code>help</code> for everything else.</p>""")

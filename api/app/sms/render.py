@@ -1,6 +1,7 @@
 """Every text the founder receives. Short, plain, numbered when there is a choice.
 SMS is ~160 chars a segment; a message stays under ~600 (4 segments) unless it's a draft."""
-from ..models import Job, Launch, Relationship, Tool
+from ..models import Job, Launch, Meeting, Relationship, Tool
+from zoneinfo import ZoneInfo
 
 MAX_DRAFT = 1100   # a LinkedIn post fits; longer text gets a link
 
@@ -20,9 +21,18 @@ def welcome(name: str, setup_url: str) -> str:
             f"3. Every Friday I text you one number.\nFinish setup (connect LinkedIn/X, 5 min): {setup_url}")
 
 
-def brief(name: str, items: list[dict], focus: str | None, memo_due: bool) -> str:
-    """items: [{n, kind, title, meta}] — numbered so 'yes 1 3' works."""
-    lines = [f"Morning{', ' + name.split()[0] if name else ''}. {len(items)} for today:" if items else "Morning. Nothing needs you today."]
+def brief(name: str, items: list[dict], focus: str | None, memo_due: bool, meetings: list["Meeting"] | None = None, tz: str = "America/New_York") -> str:
+    """items: [{n, kind, title, meta}] — numbered so 'yes 1 3' works. meetings: today's
+    confirmed calls, shown first so the day is mapped before the approval list."""
+    lines = [f"Morning{', ' + name.split()[0] if name else ''}."]
+    if meetings:
+        try:
+            tzinfo = ZoneInfo(tz)
+        except Exception:
+            tzinfo = ZoneInfo("America/New_York")
+        lines.append("On your calendar: " + "; ".join(
+            f"{m.confirmed_start.astimezone(tzinfo).strftime('%-I:%M%p').lower()} {m.subject} ({m.prospect_name or m.prospect_email})" for m in meetings))
+    lines.append(f"{len(items)} for today:" if items else "Nothing else needs you today.")
     for it in items:
         lines.append(f"{it['n']}. {it['title']}{(' — ' + it['meta']) if it.get('meta') else ''}")
     if items:
@@ -92,6 +102,22 @@ def friday(company: str, r: dict, launches: list[dict] | None = None) -> str:
         lines.append(f"Launch '{L['name']}': {L['days_out']:+d} days, {L['status']}.")
     lines.append("Reply why for how the number is computed, or plan for next week.")
     return "\n".join(lines)
+
+
+def meeting_decision(m: "Meeting") -> str:
+    from datetime import datetime
+    s = datetime.fromisoformat(m.chosen_slot["start"])
+    return (f"{m.prospect_name or m.prospect_email} picked {s.strftime('%a %b %-d, %-I:%M%p')} for \"{m.subject}\". "
+            f"yes to confirm (adds it to your calendar and theirs) / no to send other times.")
+
+
+def meeting_confirmed(m: "Meeting", tz: str) -> str:
+    try:
+        tzinfo = ZoneInfo(tz)
+    except Exception:
+        tzinfo = ZoneInfo("America/New_York")
+    s = m.confirmed_start.astimezone(tzinfo)
+    return f"Confirmed with {m.prospect_name or m.prospect_email}: {s.strftime('%a %b %-d, %-I:%M%p')}. On your calendar."
 
 
 def why() -> str:

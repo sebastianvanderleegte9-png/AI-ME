@@ -107,6 +107,8 @@ def oauth_finish(db: Session, s: SetupSession, platform: str, state: str, code: 
     tok.expires_at = datetime.now(timezone.utc) + timedelta(seconds=res.expires_in) if res.expires_in else None
     if platform == "linkedin":
         f.linkedin_handle = res.handle
+    elif platform == "outlook":
+        f.email = f.email or res.handle   # Outlook connect also gives us a confirmed work email
     else:
         f.x_handle = res.handle
     connected = sorted(set((s.data or {}).get("connected", [])) | {platform})

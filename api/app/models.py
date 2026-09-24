@@ -329,3 +329,26 @@ class OAuthToken(Base):
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = _ts()
     updated_at: Mapped[datetime] = _ts()
+
+
+class Meeting(Base):
+    __tablename__ = "meeting"
+    id: Mapped[uuid.UUID] = _uuid()
+    company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("company.id", ondelete="CASCADE"))
+    founder_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("founder.id", ondelete="CASCADE"))
+    job_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("job.id", ondelete="SET NULL"))
+    relationship_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("relationship.id", ondelete="SET NULL"))
+    prospect_name: Mapped[str | None] = mapped_column(Text)
+    prospect_email: Mapped[str] = mapped_column(Text)
+    subject: Mapped[str] = mapped_column(Text)
+    duration_minutes: Mapped[int] = mapped_column(Integer, default=30)
+    state: Mapped[str] = mapped_column(Text, default="sent")
+    proposed_slots: Mapped[list] = mapped_column(JSONB, default=list)
+    chosen_slot: Mapped[dict | None] = mapped_column(JSONB)
+    confirmed_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    confirmed_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    calendar_event_ref: Mapped[str | None] = mapped_column(Text)
+    booking_token: Mapped[str] = mapped_column(Text, unique=True)
+    rounds: Mapped[int] = mapped_column(Integer, default=1)
+    created_at: Mapped[datetime] = _ts()
+    updated_at: Mapped[datetime] = _ts()
