@@ -12,7 +12,7 @@ from ..auth import require_api_key
 from ..db import get_db
 from ..interfaces import get_billing
 from ..models import Founder, OAuthToken, Subscription
-from ..onboarding import flow, pages
+from ..onboarding import flow, pages, site
 from ..settings import settings
 
 router = APIRouter(tags=["onboarding"])
@@ -36,6 +36,12 @@ def _enqueue(fn: str, *args):
         return getattr(t, fn)(*args)
     from ..queue import generate_q
     generate_q.enqueue(f"workers.tasks.{fn}", *args)
+
+
+# ---------- site ----------
+@router.get("/", response_class=HTMLResponse, include_in_schema=False)
+def home():
+    return site.page()
 
 
 # ---------- landing ----------

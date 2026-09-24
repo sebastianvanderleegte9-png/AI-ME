@@ -5,7 +5,7 @@ from html import escape as e
 from ..interfaces.billing_oauth import PLANS
 
 CSS = """
-:root{--ink:#14140f;--mute:#6b6a60;--line:#e6e4dc;--bg:#f7f6f1;--card:#fff;--acc:#1d4ed8;--ok:#15803d;--warn:#b45309}
+:root{--ink:#f3f2ff;--mute:#9a99b3;--line:#232338;--bg:#07070c;--card:#11111f;--acc:#6c63ff;--ok:#34d399;--warn:#fbbf24}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,Inter,Segoe UI,sans-serif}
 .wrap{max-width:640px;margin:0 auto;padding:32px 16px 64px}
 .brand{font-weight:700;letter-spacing:-.01em;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}
@@ -14,25 +14,25 @@ CSS = """
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px}
 h1{font-size:24px;margin:0 0 6px;letter-spacing:-.02em}h2{font-size:17px;margin:20px 0 8px}p.sub{color:var(--mute);margin:0 0 20px}
 label{display:block;font-size:13px;font-weight:600;margin:14px 0 4px}
-input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fff}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#0e0e1a;color:var(--ink)}
 textarea{min-height:72px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:520px){.row{grid-template-columns:1fr}}
 button,.btn{display:inline-block;margin-top:20px;background:var(--acc);color:#fff;border:0;border-radius:8px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
-.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
 .cust{border:1px dashed var(--line);border-radius:8px;padding:12px;margin-top:12px}
-.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:#eef2ff;color:var(--acc);margin-left:8px}
-.tag.ok{background:#ecfdf5;color:var(--ok)}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(108,99,255,.18);color:#a59bff;margin-left:8px}
+.tag.ok{background:rgba(52,211,153,.15);color:var(--ok)}
 .score{display:flex;align-items:baseline;gap:10px}.score b{font-size:48px;letter-spacing:-.03em}.score span{color:var(--mute)}
 .bars{margin:16px 0}.bar{display:grid;grid-template-columns:110px 1fr 36px;gap:10px;align-items:center;margin:6px 0;font-size:14px}
 .bar i{height:8px;border-radius:4px;background:var(--line);display:block;position:relative}.bar i b{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--acc)}
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}@media(max-width:520px){.plans{grid-template-columns:1fr}}
 .plan{border:1px solid var(--line);border-radius:10px;padding:16px}.plan b{font-size:22px;display:block}.plan small{color:var(--mute)}
-.plan.pick{border-color:var(--acc);box-shadow:0 0 0 2px #dbe4ff}
+.plan.pick{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
 .opt{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:8px;margin-top:10px}.opt input{width:auto;margin-top:4px}
 .opt div b{display:block}.opt div small{color:var(--mute)}
 ul.list{padding-left:18px;margin:6px 0}.note{font-size:13px;color:var(--mute);margin-top:16px}
 .done{text-align:center;padding:24px 0}.done .big{font-size:56px}
-code{background:#f1f0ea;padding:2px 6px;border-radius:4px}
+code{background:#1e1e30;padding:2px 6px;border-radius:4px}
 """
 
 
@@ -42,7 +42,7 @@ def shell(title: str, body: str, step: int | None = None) -> str:
         bar = '<div class="steps">' + "".join(f'<i class="{"done" if i < step else "on" if i == step else ""}"></i>' for i in range(1, 9)) + "</div>"
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)} · Marketing Engineer</title><style>{CSS}</style></head><body><div class="wrap">
-<div class="brand">Marketing Engineer <small>{('step ' + str(step) + ' of 8') if step else ''}</small></div>{bar}
+<div class="brand"><a href="/" style="color:inherit;text-decoration:none">Marketing Engineer</a> <small>{('step ' + str(step) + ' of 8') if step else ''}</small></div>{bar}
 <div class="card">{body}</div></div></body></html>"""
 
 
@@ -52,7 +52,7 @@ def landing(error: str | None = None) -> str:
 <p class="sub">Ten minutes of setup. A free growth diagnostic before you pay anything. Then one voice memo a week, and it drafts, you approve, it posts.</p>
 <form method="post" action="/start">
 <label>Work email</label><input name="email" type="email" required placeholder="you@company.com">
-{f'<p style="color:#b91c1c">{e(error)}</p>' if error else ''}
+{f'<p style="color:#f87171">{e(error)}</p>' if error else ''}
 <button>Start the free diagnostic →</button></form>
 <p class="note">No card until you have seen your scorecard. Nothing is ever posted without your yes.</p>""")
 
@@ -67,7 +67,7 @@ def step1(s, error=None) -> str:
 <label>What you do, in one sentence</label><input name="one_line" required value="{e(d.get('one_line',''))}" placeholder="e.g. AI phone agents for real-estate brokerages">
 <label>Your name (the founder whose voice we post in)</label><input name="founder_name" required value="{e(d.get('founder_name',''))}">
 <label>If your site blocks robots, paste your homepage text here (optional)</label><textarea name="site_text">{e(d.get('site_text',''))}</textarea>
-{f'<p style="color:#b91c1c">{e(error)}</p>' if error else ''}
+{f'<p style="color:#f87171">{e(error)}</p>' if error else ''}
 <button>Continue →</button></form>""", 1)
 
 
@@ -84,7 +84,7 @@ def step2(s, error=None) -> str:
     return shell("Best customers", f"""
 <h1>Your three best customers</h1><p class="sub">The engineer builds your ideal customer profile from people who already pay you. One is enough to start.</p>
 <form method="post" action="/setup/{e(s.token)}/2">{blocks}
-{f'<p style="color:#b91c1c">{e(error)}</p>' if error else ''}
+{f'<p style="color:#f87171">{e(error)}</p>' if error else ''}
 <button>Continue →</button></form>""", 2)
 
 
@@ -110,12 +110,12 @@ def step4(s, sent: bool = False, code_hint: str | None = None, error=None) -> st
 {f'<p class="note">Local/test mode: the code is <code>{e(code_hint)}</code>. POST it to <code>/public/sms/inbound</code> as the founder to simulate the reply.</p>' if code_hint else ''}
 <form method="post" action="/setup/{e(s.token)}/4/check"><button>I replied →</button></form>
 <form method="post" action="/setup/{e(s.token)}/4"><input type="hidden" name="phone" value="{e(d.get('phone',''))}"><button class="btn ghost">Resend the code</button></form>
-{f'<p style="color:#b91c1c">{e(error)}</p>' if error else ''}""", 4)
+{f'<p style="color:#f87171">{e(error)}</p>' if error else ''}""", 4)
     return shell("Phone", f"""
 <h1>Your phone number</h1><p class="sub">Everything after this happens over text: the morning brief, the drafts to approve, the Friday number.</p>
 <form method="post" action="/setup/{e(s.token)}/4">
 <label>Mobile number (with country code)</label><input name="phone" required placeholder="+13055551234" value="{e(d.get('phone',''))}">
-{f'<p style="color:#b91c1c">{e(error)}</p>' if error else ''}
+{f'<p style="color:#f87171">{e(error)}</p>' if error else ''}
 <button>Text me a code →</button></form>""", 4)
 
 
@@ -165,7 +165,7 @@ def step7(s, error=None) -> str:
     return shell("Subscribe", f"""
 <h1>Pick a plan</h1><p class="sub">Cancel any time. If you cancel, posting stops; your data and your scorecards stay.</p>
 <form method="post" action="/setup/{e(s.token)}/7"><div class="plans">{cards}</div>
-{f'<p style="color:#b91c1c">{e(error)}</p>' if error else ''}
+{f'<p style="color:#f87171">{e(error)}</p>' if error else ''}
 <button>Continue to payment →</button></form>""", 7)
 
 

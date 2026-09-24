@@ -215,6 +215,7 @@ PUBLIC_BASE_URL for the setup link.
 The front door. A founder goes from the website to their first text in ten minutes, and sees a free growth scorecard before any card is asked for.
 
 ```
+GET  /                                       marketing site (onboarding/site.py); every button -> /start
 GET  /start                                  landing (email only)
 POST /start                                  -> 303 /setup/{token}      (same email resumes the same session)
 GET  /setup/{token}                          resume at the step reached
