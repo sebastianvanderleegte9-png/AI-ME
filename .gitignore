@@ -4,3 +4,6 @@ __pycache__/
 .pytest_cache/
 node_modules/
 .next/
+docs/*.png
+docs/*.jpg
+dump.rdb

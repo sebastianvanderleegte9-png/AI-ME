@@ -201,6 +201,7 @@ def account(s, sub, founder, tokens: list, portal: str | None) -> str:
 <h2>Subscription <span class="tag {'ok' if status in ('active','trialing') else ''}">{e(status)}</span></h2>
 <p>{e((sub.plan.title() + ' plan') if sub else 'No plan yet')}{(' · renews ' + sub.current_period_end.date().isoformat()) if sub and sub.current_period_end else ''}</p>
 {f'<a class="btn ghost" href="{e(portal)}">Manage billing</a>' if portal else ''}
+<a class="btn ghost" href="/dashboard/{e(s.token)}">View your dashboard</a>
 <h2>Connected</h2><ul class="list">{conn}</ul>
 <a class="btn ghost" href="/setup/{e(s.token)}/oauth/linkedin">Reconnect LinkedIn</a> <a class="btn ghost" href="/setup/{e(s.token)}/oauth/x">Reconnect X</a> <a class="btn ghost" href="/setup/{e(s.token)}/oauth/outlook">Connect Outlook</a>
 <h2>Phone</h2><p>{e(founder.phone or '')} {'<span class="tag ok">verified</span>' if founder.phone_verified_at else ''} · schedule: <b>{e(founder.schedule_mode)}</b></p>

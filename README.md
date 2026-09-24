@@ -25,6 +25,7 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. All twelve components a
 | 13 | SMS surface | **done** — phone link + verify; voice memo → drafts; numbered morning brief; yes/no/edit/batch by text; tool builds, joint proposals, plan changes; Friday number; pause; Twilio + Whisper providers behind fakes |
 | 14 | Web onboarding + billing | **done** — `/start` → 8-step wizard (company, customers, LinkedIn/X OAuth, phone verify by text, schedule mode, free diagnostic, Stripe Checkout, live); subscription drives `company.status`; lapsed card holds posting; encrypted tokens; account page |
 | 15 | Outlook email + meetings | **done** — personalized outreach email over the founder's own Outlook (same approval feed as posts); a positive reply auto-proposes times from the real calendar; public booking page; founder approves/denies by text; deny reschedules automatically; approve creates the calendar event; morning brief maps the day |
+| 16 | Metrics dashboard | **done** — `/dashboard/{token}`, same setup-session auth as `/account`; growth score meter, ICP-impressions trend (10-week `Outcome` history + the live current week), signup-source breakdown, outreach/meeting stats; navy brand palette validated for categorical CVD-safety |
 | 12 | Learned judgment | **done** — company-week dataset from outcomes; k-NN planner over similar company-weeks (cites its neighbours, abstains under 8); blind A/B arms; Welch's t-test evaluation; promotion gated on a win |
 
 ## Real LLM
@@ -215,6 +216,15 @@ PUBLIC_BASE_URL for the setup link.
 
 The front door. A founder goes from the website to their first text in ten minutes, and sees a free growth scorecard before any card is asked for.
 
+The public site and dashboard follow the structural pattern of a premium dark-mode SaaS template
+(floating pill nav, hero with an elevated product-preview card, a bento feature grid, a pricing
+card row, a watermark footer, an app-shell dashboard with a grouped sidebar and breadcrumb bar) —
+reskinned in Aime's own navy palette, copy, and icon set (`onboarding/icons.py`). Two things are
+deliberately not borrowed: fabricated social proof (star-rated quotes from invented people, "N
+developers use this") and made-up traction numbers. Aime has no real customers yet, so the hero's
+stat card is explicitly captioned "Illustrative", and the section that would normally hold
+testimonials instead shows the product's own shipped rules (`#principles`) — real, not invented.
+
 ```
 GET  /                                       marketing site (onboarding/site.py); every button -> /start
 GET  /start                                  landing (email only)
@@ -273,6 +283,30 @@ POST /book/{token}/{slot}                            records the pick, texts the
   `MS_CLIENT_SECRET`, `MS_TENANT` (default `common`, works for personal and work Microsoft accounts).
   Both real providers call Microsoft Graph with the founder's own delegated token — never an app-level
   mailbox.
+
+## Metrics dashboard (Component 16)
+
+```
+GET /dashboard/{token}   same setup-session token as /account — no separate login, linked from the account page
+```
+
+- **No new data.** The dashboard is a read-only view over what Components 5/12/15 already compute:
+  `metrics/report.py:rollup()` for the live current week (impressions in ICP, signups, pages indexed,
+  approval rate), the last 10 `Outcome` rows (written weekly by `friday_close()`) for the trend line, and
+  `Job`/`Meeting` counts for the outreach/meeting stat row. `metrics/dashboard.py:dashboard_data()` is the
+  one function that shapes all of it; it runs no queries the rest of the app didn't already need.
+- **Self-hosted, not Base44**, for the same reason as the rest of the site (Component 14b): the data, auth,
+  and billing all already live in this Postgres/FastAPI app, so splitting the dashboard out would mean
+  re-syncing data into a second system rather than reading what's already there.
+- **Color follows the dataviz house rules**, not eyeballed: the single-series ICP-impressions trend uses
+  one brand hue; the signup-source bars use a fixed 4-color categorical order (LinkedIn/X/search/referral)
+  that's been run through the palette validator against the site's real navy surface —
+  `node scripts/validate_palette.js "#4f8ef7,#1fae76,#c2870f,#a855f7" --mode dark --surface "#070d1a"` —
+  and passes lightness band, chroma floor, CVD separation (ΔE ≥ 8), the normal-vision floor, and contrast.
+  The order is fixed in `metrics/dashboard.py:SOURCE_ORDER` and never reassigned by value; a 5th source
+  folds into "other" rather than adding a new hue.
+- Empty states are explicit rather than blank charts: a brand-new company sees "not enough weeks yet" /
+  "no signups classified yet" instead of an empty plot.
 
 ## Run it
 

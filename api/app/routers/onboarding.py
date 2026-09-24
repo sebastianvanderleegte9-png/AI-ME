@@ -11,8 +11,9 @@ from sqlalchemy.orm import Session
 from ..auth import require_api_key
 from ..db import get_db
 from ..interfaces import get_billing
-from ..models import Founder, OAuthToken, Subscription
-from ..onboarding import flow, pages, site
+from ..metrics.dashboard import dashboard_data
+from ..models import Company, Founder, OAuthToken, Subscription
+from ..onboarding import dashboard_pages, flow, pages, site
 from ..settings import settings
 
 router = APIRouter(tags=["onboarding"])
@@ -247,6 +248,16 @@ def account(token: str, db: Session = Depends(get_db)):
     toks = db.scalars(select(OAuthToken).where(OAuthToken.founder_id == s.founder_id)).all() if s.founder_id else []
     portal = get_billing().portal_url(customer_ref=sub.customer_ref, return_url=f"{settings.public_base_url}/account/{s.token}") if sub and sub.customer_ref else None
     return pages.account(s, sub, f, toks, portal)
+
+
+@router.get("/dashboard/{token}", response_class=HTMLResponse)
+def dashboard(token: str, db: Session = Depends(get_db)):
+    s = _sess(db, token)
+    if not s.company_id:
+        raise HTTPException(404, "no company on this setup link yet")
+    company = db.get(Company, s.company_id)
+    data = dashboard_data(db, company)
+    return dashboard_pages.dashboard(s, company, data)
 
 
 # ---------- admin ----------
