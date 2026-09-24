@@ -12,8 +12,8 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 |---|-----------|-------|
 | 0 | Schema and skeleton | **done** — 11 tables, API, queue, worker, fakes, tests, CI |
 | 1 | Intake and ICP model | **done** — founders, crawl→product summary, 3 customers→ICP+embedding, voice samples, Anthropic provider |
-| 2 | Scorecard (Judgment v0) | next |
-| 3 | Voice engine + approval feed (+ visuals) | |
+| 2 | Scorecard (Judgment v0) | **done** — 5 rule-scored channels, fix library, 90-day sequence, targets, HTML + PDF diagnostic |
+| 3 | Voice engine + approval feed (+ visuals) | next |
 | 4 | Attention map | |
 | 5 | Metrics and Friday report | |
 | 6 | Sequencer (Judgment v1) | |
@@ -33,6 +33,17 @@ GET  /founders/{id}/voice            samples + rules (banned phrases etc.)
 ```
 
 If a site blocks fetches, pass `site_text` with the pasted page copy.
+
+## Scorecard (Component 2)
+
+```
+POST /companies/{id}/scorecard        generate (rules v0.1) -> plan row for this week
+GET  /companies/{id}/scorecard        latest, JSON
+GET  /companies/{id}/scorecard.html   the in-app page
+GET  /companies/{id}/scorecard.pdf    the diagnostic a founder gets sent (needs node + playwright)
+```
+
+Rules live in `api/app/judgment/rules.py`; every threshold is a named function with a rationale. Bump `RULES_VERSION` when you change one.
 
 ## Run it
 
