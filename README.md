@@ -14,8 +14,8 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 1 | Intake and ICP model | **done** — founders, crawl→product summary, 3 customers→ICP+embedding, voice samples, Anthropic provider |
 | 2 | Scorecard (Judgment v0) | **done** — 5 rule-scored channels, fix library, 90-day sequence, targets, HTML + PDF diagnostic |
 | 3 | Voice engine + approval feed (+ visuals) | **done** — transcript→claims→12 formats→voice-checked drafts→feed; scheduled publish; brand-colored data cards |
-| 4 | Attention map | next |
-| 5 | Metrics and Friday report | |
+| 4 | Attention map | **done** — ICP-seeded account map, fit score + clusters, daily reply targets in the feed, cooldowns |
+| 5 | Metrics and Friday report | next |
 | 6 | Sequencer (Judgment v1) | |
 | 7–12 | Page factory, launch kit, relationships, site/onboarding, tool factory, learned judgment | |
 
@@ -60,6 +60,17 @@ GET   /formats                       the 12 formats
 Every draft passes `voice/check.py` (banned phrases → hard fail; slop patterns → penalties; similarity to the
 founder's own posts) before it reaches the feed. Nothing publishes without a tap. Run `workers.tasks.publish_due`
 every few minutes as the scheduler safety net.
+
+## Attention map (Component 4)
+
+```
+POST /companies/{id}/attention-map   build/refresh from the ICP (personas + customers -> enrichment search -> score -> cluster)
+GET  /companies/{id}/attention-map   ?cluster=buyer|influencer|peer|community &platform= &limit=
+POST /founders/{id}/targets          {platforms[], per_platform} -> reply jobs (type=reply) in the feed, one live thread each
+```
+
+Targets favour buyers and influencers by ICP fit, skip anyone replied to in the last 7 days, and a reply that
+adds nothing (no experience, number, disagreement or question) is skipped rather than drafted.
 
 ## Run it
 

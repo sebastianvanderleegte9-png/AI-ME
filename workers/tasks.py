@@ -48,6 +48,9 @@ def execute_job(job_id: str) -> str:
                 j.platform_ref = f"internal-{uuid.uuid4().hex[:8]}"
             j.state = "executed"
             j.executed_at = datetime.now(timezone.utc)
+            if j.type == "reply":
+                from app.attention.targets import record_reply_executed
+                record_reply_executed(db, j)
         except Exception as e:  # noqa: BLE001
             j.state = "failed"
             j.error = str(e)[:2000]

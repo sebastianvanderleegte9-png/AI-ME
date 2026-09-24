@@ -41,9 +41,29 @@ class Social(ABC):
     @abstractmethod
     def account_stats(self, *, founder_id: str, channel: str) -> dict: ...
 
+    @abstractmethod
+    def recent_posts(self, *, channel: str, handle: str, limit: int = 10) -> list[dict]:
+        """Public recent posts by any account: [{ref, text, posted_at, replies, reactions}].
+        Used by the attention map to find live threads the ICP is reading."""
+        ...
+
 
 class FakeSocial(Social):
     """Records publishes in memory and returns plausible stats. Deterministic enough for tests."""
+
+    TOPICS = ["hiring a marketing engineer", "why our onboarding failed", "pSEO for B2B", "founder-led sales",
+              "AI agents in real estate", "what we learned shipping to 1,000 users", "the algo changed again",
+              "compliance review took nine weeks", "launch day retro", "outbound is dead, again"]
+
+    def recent_posts(self, *, channel, handle, limit=10):
+        seed = sum(handle.encode())
+        out = []
+        for i in range(limit):
+            k = (seed + i) % len(self.TOPICS)
+            out.append({"ref": f"{channel}:{handle}:{i}", "text": f"{self.TOPICS[k]} — a thread by @{handle}",
+                        "posted_at": f"2026-09-{max(1, 24 - i):02d}T09:00:00Z",
+                        "replies": (seed * (i + 1)) % 40, "reactions": (seed * (i + 3)) % 300})
+        return out
 
     def __init__(self):
         self.published: list[dict] = []
