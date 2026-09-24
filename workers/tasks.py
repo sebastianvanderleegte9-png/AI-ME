@@ -54,3 +54,18 @@ def execute_job(job_id: str) -> str:
             log.exception("job %s failed", job_id)
         db.commit()
         return j.state
+
+
+def publish_due() -> int:
+    """Safety net for the scheduler: publish any approved/edited job whose slot has passed
+    and which is not already executed. Run every few minutes (rq-scheduler or cron)."""
+    from sqlalchemy import select
+    n = 0
+    with SessionLocal() as db:
+        due = db.scalars(select(Job).where(Job.state.in_(["approved", "edited"]),
+                                           Job.scheduled_for <= datetime.now(timezone.utc))).all()
+        ids = [str(j.id) for j in due]
+    for jid in ids:
+        if execute_job(jid) == "executed":
+            n += 1
+    return n

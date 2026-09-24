@@ -13,8 +13,8 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 0 | Schema and skeleton | **done** — 11 tables, API, queue, worker, fakes, tests, CI |
 | 1 | Intake and ICP model | **done** — founders, crawl→product summary, 3 customers→ICP+embedding, voice samples, Anthropic provider |
 | 2 | Scorecard (Judgment v0) | **done** — 5 rule-scored channels, fix library, 90-day sequence, targets, HTML + PDF diagnostic |
-| 3 | Voice engine + approval feed (+ visuals) | next |
-| 4 | Attention map | |
+| 3 | Voice engine + approval feed (+ visuals) | **done** — transcript→claims→12 formats→voice-checked drafts→feed; scheduled publish; brand-colored data cards |
+| 4 | Attention map | next |
 | 5 | Metrics and Friday report | |
 | 6 | Sequencer (Judgment v1) | |
 | 7–12 | Page factory, launch kit, relationships, site/onboarding, tool factory, learned judgment | |
@@ -44,6 +44,22 @@ GET  /companies/{id}/scorecard.pdf    the diagnostic a founder gets sent (needs 
 ```
 
 Rules live in `api/app/judgment/rules.py`; every threshold is a named function with a rationale. Bump `RULES_VERSION` when you change one.
+
+## Voice engine (Component 3)
+
+```
+POST  /founders/{id}/interview       {transcript, platforms[], posts_per_platform, week_start?}
+GET   /founders/{id}/feed            the approval feed (pending by default; ?state=all)
+POST  /jobs/{id}/decision            {decision: approve|reject, edited_output?}  -> publishes at its slot
+GET   /founders/{id}/voice/stats     approval / edit rates, overall and per format (gate: 70% / 20%)
+PATCH /founders/{id}/voice/rules     casing, tone, banned phrases, formats_allowed, visual brand
+GET   /jobs/{id}/visual.png          brand-colored card, only when the post carries a number/steps/quote
+GET   /formats                       the 12 formats
+```
+
+Every draft passes `voice/check.py` (banned phrases → hard fail; slop patterns → penalties; similarity to the
+founder's own posts) before it reaches the feed. Nothing publishes without a tap. Run `workers.tasks.publish_due`
+every few minutes as the scheduler safety net.
 
 ## Run it
 

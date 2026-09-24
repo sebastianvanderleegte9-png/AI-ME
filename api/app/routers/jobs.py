@@ -2,7 +2,7 @@
 backend: create (by the product), list (for the feed), decide (the founder's tap), and
 enqueue for execution. Component 3 adds voice-match gating and scheduling; the shape
 does not change."""
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -74,8 +74,12 @@ def decide(job_id: UUID, body: JobDecision, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(j)
     if j.state in EXECUTABLE_STATES:
-        publish_q.enqueue("workers.tasks.execute_job", str(j.id),
-                          at_front=False)
+        # Principle 3 + scheduling: publish at the slot, not at the tap.
+        delay = (j.scheduled_for - datetime.now(timezone.utc)).total_seconds() if j.scheduled_for else 0
+        if delay > 0:
+            publish_q.enqueue_in(timedelta(seconds=delay), "workers.tasks.execute_job", str(j.id))
+        else:
+            publish_q.enqueue("workers.tasks.execute_job", str(j.id))
     return j
 
 
