@@ -43,10 +43,22 @@ def interview(founder_id: uuid.UUID, body: InterviewIn, db: Session = Depends(ge
     bad = [p for p in body.platforms if p not in ("linkedin", "x")]
     if bad:
         raise HTTPException(422, f"unknown platforms {bad}")
+    weekly = {}
+    plan_id = body.plan_id
+    if plan_id is None:
+        from ..models import Plan
+        from datetime import date, timedelta
+        ws = date.today() - timedelta(days=date.today().weekday())
+        p = db.scalars(select(Plan).where(Plan.company_id == f.company_id, Plan.week_start == ws)).first()
+        if p:
+            plan_id = p.id
+            weekly = ((p.scorecard or {}).get("weekly") or {}).get("settings") or {}
     try:
         return run_voice_engine(db, DraftPlan(company_id=f.company_id, founder_id=f.id, transcript=body.transcript,
-                                              platforms=body.platforms, posts_per_platform=body.posts_per_platform,
-                                              week_start=body.week_start, plan_id=body.plan_id))
+                                              platforms=body.platforms,
+                                              posts_per_platform=weekly.get("posts_per_platform", body.posts_per_platform),
+                                              week_start=body.week_start, plan_id=plan_id,
+                                              format_weights=weekly.get("format_weights")))
     except ValueError as e:
         raise HTTPException(422, str(e))
 

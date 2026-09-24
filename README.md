@@ -16,8 +16,9 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 3 | Voice engine + approval feed (+ visuals) | **done** — transcript→claims→12 formats→voice-checked drafts→feed; scheduled publish; brand-colored data cards |
 | 4 | Attention map | **done** — ICP-seeded account map, fit score + clusters, daily reply targets in the feed, cooldowns |
 | 5 | Metrics and Friday report | **done** — daily pull, impressions-inside-ICP (icp_v1), signup-source widget, weekly outcome row, Friday report + share card |
-| 6 | Sequencer (Judgment v1) | next |
-| 7–12 | Page factory, launch kit, relationships, site/onboarding, tool factory, learned judgment | |
+| 6 | Sequencer (Judgment v1) | **done** — Monday re-plan from the outcome row; 8 named rules; settings steer the voice engine; overrides logged |
+| 7 | Page factory | next |
+| 8–12 | Launch kit, relationships, site/onboarding, tool factory, learned judgment | |
 
 ## Real LLM
 
@@ -87,6 +88,20 @@ GET  /public/{id}/signup-widget.js        one <script> tag; adds 'how did you he
 impressions_icp = impressions x share of engaged accounts matching the attention map (>= 0.5 fit); a 20% prior
 is used and labelled when fewer than 5 engaged accounts are visible. The method id is on every row.
 Worker tasks: `daily_metrics_pull` (daily), `friday_close` (Fridays), alongside `publish_due`.
+
+## Sequencer (Component 6)
+
+```
+POST /companies/{id}/week            Monday re-plan (idempotent per week): settings + decisions with rule ids and reasons
+GET  /companies/{id}/week            current weekly plan
+POST /companies/{id}/week/override   {changes, reason, by} -> applied and logged as a labeled example
+```
+
+Rules (`judgment/sequencer.py`, seq-v1.0): R1 phase from the 90-day sequence · R2 attribution first · R3 approval
+under 70% cuts volume and weights approved formats · R4 edit rate over 20% flags voice retraining · R5 two flat
+weeks with good approval shifts to ICP-reaching formats and adds replies · R6 momentum holds the mix · R7 search
+in phase + data asset schedules a page batch · R8 launches in phase opens the launch kit. The interview endpoint
+picks up the week's settings automatically.
 
 ## Run it
 

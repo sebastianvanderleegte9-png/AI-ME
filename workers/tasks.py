@@ -102,3 +102,16 @@ def friday_close() -> int:
             except ValueError:
                 log.warning("no plan for %s; skipping outcome", c.name)
     return n
+
+
+def monday_replan() -> int:
+    """Monday: sequencer re-plans every active company from last week's outcome."""
+    from sqlalchemy import select
+    from app.judgment.sequencer import commit_week, plan_week
+    from app.models import Company
+    n = 0
+    with SessionLocal() as db:
+        for c in db.scalars(select(Company).where(Company.status == "active")).all():
+            commit_week(db, c, plan_week(db, c))
+            n += 1
+    return n

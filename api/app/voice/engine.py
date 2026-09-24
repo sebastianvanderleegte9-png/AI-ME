@@ -48,9 +48,11 @@ class DraftPlan:
     posts_per_platform: int = 5
     week_start: datetime | None = None
     plan_id: uuid.UUID | None = None
+    format_weights: dict | None = None
 
 
 def extract_claims(transcript: str) -> list[dict]:
+    import re
     llm = get_llm()
     out = llm.complete(EXTRACT_SYS, transcript[:60000], purpose="voice_extract", json_mode=True, max_tokens=3000).text
     try:
@@ -58,7 +60,7 @@ def extract_claims(transcript: str) -> list[dict]:
     except json.JSONDecodeError:
         claims = []
     if not claims:  # fake LLM or parse failure: fall back to sentence-level claims so the pipeline runs
-        sents = [s.strip() for s in transcript.replace("\n", " ").split(". ") if len(s.strip()) > 40][:20]
+        sents = [s.strip() for s in re.split(r"(?<=[.!?])\s+", transcript.replace("\n", " ")) if len(s.strip()) > 25][:20]
         import re
         claims = []
         for i, s in enumerate(sents):
@@ -86,12 +88,23 @@ def _guess_type(s: str) -> str:
     return "story"
 
 
-def pick_formats(claims: list[dict], allowed: list[str] | None, n: int, rng: random.Random) -> list[tuple[dict, str]]:
-    """Spread claims across formats; avoid using the same format twice in a batch when possible."""
+def pick_formats(claims: list[dict], allowed: list[str] | None, n: int, rng: random.Random,
+                 weights: dict[str, float] | None = None) -> list[tuple[dict, str]]:
+    """Spread claims across formats; avoid using the same format twice in a batch when possible.
+    `weights` (from the sequencer) let a format be picked more often: a weight of 2 counts as
+    half a use, so it wins ties and repeats before others do."""
+    weights = weights or {}
     used: dict[str, int] = {}
     picks: list[tuple[dict, str]] = []
     pool = claims[:]
     rng.shuffle(pool)
+    if weights:
+        # claims that can take a heavily weighted format go first, so the weight changes
+        # what gets written, not just how it's shaped
+        def _best_w(c):
+            t = {c["type"]} | ({"number"} if c.get("number") else set()) | ({"customer"} if c.get("customer") else set())
+            return max((weights.get(f, 1.0) for f in formats_for(t, allowed)), default=1.0)
+        pool.sort(key=_best_w, reverse=True)
     for c in pool:
         types = {c["type"]}
         if c.get("number"):
@@ -102,7 +115,7 @@ def pick_formats(claims: list[dict], allowed: list[str] | None, n: int, rng: ran
         if not opts:
             fallback = ["list", "contrarian_take", "number_with_lesson", "question"]
             opts = [f for f in fallback if not allowed or f in allowed] or (allowed[:1] if allowed else ["list"])
-        opts.sort(key=lambda f: used.get(f, 0))
+        opts.sort(key=lambda f: used.get(f, 0) / max(weights.get(f, 1.0), 0.1))
         f = opts[0]
         used[f] = used.get(f, 0) + 1
         picks.append((c, f))
@@ -157,7 +170,7 @@ def run_voice_engine(db: Session, plan: DraftPlan) -> dict:
     created, dropped, checks = [], [], []
     start = (plan.week_start or datetime.now(timezone.utc)).replace(hour=9, minute=0, second=0, microsecond=0)
     for platform in plan.platforms:
-        picks = pick_formats(claims, allowed, plan.posts_per_platform, rng)
+        picks = pick_formats(claims, allowed, plan.posts_per_platform, rng, plan.format_weights)
         slot = 0
         for claim, fmt in picks:
             text, meta = None, {}
