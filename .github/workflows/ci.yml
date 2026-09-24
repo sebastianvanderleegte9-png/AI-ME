@@ -1,0 +1,27 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: pgvector/pgvector:pg16
+        env: { POSTGRES_USER: me, POSTGRES_PASSWORD: me, POSTGRES_DB: me }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U me" --health-interval 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+psycopg://me:me@localhost:5432/me
+      REDIS_URL: redis://localhost:6379/0
+      API_KEY: dev-key
+      PYTHONPATH: ${{ github.workspace }}/api:${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - run: pytest -q tests

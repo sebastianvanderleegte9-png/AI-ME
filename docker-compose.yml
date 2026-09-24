@@ -1,0 +1,48 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: me
+      POSTGRES_PASSWORD: me
+      POSTGRES_DB: me
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U me"]
+      interval: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+
+  api:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    working_dir: /src/api
+    environment: &env
+      DATABASE_URL: postgresql+psycopg://me:me@db:5432/me
+      REDIS_URL: redis://redis:6379/0
+      API_KEY: dev-key
+      PYTHONPATH: /src/api:/src
+    volumes: [.:/src]
+    ports: ["8000:8000"]
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_started }
+
+  worker:
+    build: .
+    command: rq worker publish generate metrics default --url redis://redis:6379/0
+    working_dir: /src
+    environment: *env
+    volumes: [.:/src]
+    depends_on: [api]
+
+  metabase:
+    image: metabase/metabase:latest
+    ports: ["3001:3000"]
+    depends_on: [db]
+
+volumes:
+  pgdata:
