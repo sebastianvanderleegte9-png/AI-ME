@@ -20,8 +20,9 @@ Build plan: `docs/Build-Plan-AI-Marketing-Engineer.pdf`. This repo follows it co
 | 7 | Page factory | **done** — 3 templates, ICP/product-driven candidates, data-point-required generation, batch approval, hosted pages + sitemap + FAQ schema, indexed tracking |
 | 8 | Launch kit | **done** — PH / feature-drop / joint playbooks expand into dated jobs; posts pre-drafted from the brief; checklist taps; close writes results; sequencer proposes launches |
 | 9 | Relationship engine | **done** — v1 joint launches brokered between companies on the product (match → both accept → linked launches); v2 warm outreach sequences to influencers/peers, reply cancels the rest |
-| 10 | Site and onboarding engine | next |
-| 11–12 | Tool factory, learned judgment | |
+| 10 | Site and onboarding engine | **done** — 40-check audit (clarity / action / first session / trust), rewrites as site_change jobs, hosted variant + CMS export, activation tracking, scorecard reads the audit |
+| 11 | Tool factory | next |
+| 12 | Learned judgment | |
 
 ## Real LLM
 
@@ -145,6 +146,21 @@ POST /companies/{id}/relationships/outreach             {founder_id, account_ids
 POST /relationships/{id}/replied                        they answered: pending steps cancelled, state=replied
 GET  /companies/{id}/relationships?kind=                + outreach stats (reply rate; gate 25%)
 ```
+
+## Site and onboarding engine (Component 10)
+
+```
+POST /companies/{id}/site/audit          {url?, html?, walkthrough?} -> 40 checks scored by category; stored on the plan row
+POST /companies/{id}/site/rewrite        audit + site_change jobs for failed copy checks (h1, subhead, title, CTA, signup fields, first screen, activation email)
+GET  /companies/{id}/site/changes        proposals and their state
+GET  /companies/{id}/site/export         approved changes as a copy block for any CMS
+GET  /v/{id}/landing                     hosted variant assembled from approved changes (with the signup-source widget)
+POST /public/{id}/activation             {signup_id} from the founder's app when a user reaches first value
+GET  /companies/{id}/site/activation     signups vs activations, last 28 days
+```
+
+Checks live in `site/checks.py` (audit-v1): each is a named function with a title, weight, evidence and fix. A tap on a
+site_change executes it (it becomes part of the variant/export). The scorecard's onboarding channel reads the latest audit.
 
 ## Run it
 

@@ -121,7 +121,11 @@ def onboarding(s: Signals) -> ChannelScore:
     sub["self_serve"] = 9 if s.has_self_serve_signup else 3 if s.has_self_serve_signup is None else 2
     sub["attribution"] = 10 if s.has_signup_source_field else 1
     sub["signups"] = 8 if s.signups_30d >= 100 else 5 if s.signups_30d >= 20 else 2
-    c.score = _clamp(0.4 * sub["self_serve"] + 0.35 * sub["attribution"] + 0.25 * sub["signups"])
+    if s.site_audit_score is not None:
+        sub["audit"] = int(round(s.site_audit_score))
+        c.score = _clamp(0.3 * sub["self_serve"] + 0.3 * sub["attribution"] + 0.15 * sub["signups"] + 0.25 * sub["audit"])
+    else:
+        c.score = _clamp(0.4 * sub["self_serve"] + 0.35 * sub["attribution"] + 0.25 * sub["signups"])
     c.weakest = min(sub, key=sub.get)
     c.evidence = {"self_serve": s.has_self_serve_signup, "signup_source_field": s.has_signup_source_field,
                   "signups_30d": s.signups_30d}
@@ -154,6 +158,7 @@ FIXES = {
     ("onboarding", "self_serve"): ("self_serve_path", "Add a self-serve path (trial, sandbox or demo) so inbound attention converts without a sales call."),
     ("onboarding", "attribution"): ("signup_source_field", "Add the one-line 'how did you hear about us' field; it is the only reliable attribution at this stage."),
     ("onboarding", "signups"): ("activation_audit", "Run the 40-point onboarding audit and fix the top three drop-offs."),
+    ("onboarding", "audit"): ("site_rewrite", "Approve the generated site changes for the failed audit checks and ship the variant."),
 }
 
 

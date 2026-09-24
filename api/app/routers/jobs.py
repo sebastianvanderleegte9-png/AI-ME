@@ -73,7 +73,7 @@ def decide(job_id: UUID, body: JobDecision, db: Session = Depends(get_db)):
 
     db.commit()
     db.refresh(j)
-    if j.state in EXECUTABLE_STATES and j.type == "launch_task":
+    if j.state in EXECUTABLE_STATES and j.type in ("launch_task", "site_change"):
         # a checklist item: the tap IS the execution
         j.state, j.platform_ref, j.executed_at = "executed", f"task-{j.id.hex[:8]}", datetime.now(timezone.utc)
         db.commit()

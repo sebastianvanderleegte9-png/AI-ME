@@ -45,6 +45,7 @@ class Signals:
     signup_steps: int | None = None
     has_signup_source_field: bool = False
     signups_30d: int = 0
+    site_audit_score: float | None = None
     proof_points: list[str] = field(default_factory=list)
 
 
@@ -80,6 +81,16 @@ def gather(db: Session, company: Company) -> Signals:
         fs.past_post_count = len(vp.samples) if vp else 0
         sig.founders.append(fs)
 
+    # latest site audit, if any (Component 10)
+    from ..models import Plan
+    plan = db.scalars(select(Plan).where(Plan.company_id == company.id).order_by(Plan.week_start.desc())).first()
+    audit = (plan.scorecard or {}).get("site_audit") if plan else None
+    if audit:
+        sig.site_audit_score = audit.get("overall")
+        snap = audit.get("snapshot", {})
+        sig.has_self_serve_signup = bool(snap.get("signup_url"))
+        sig.signup_steps = snap.get("signup_steps")
+        sig.has_signup_source_field = "c17" not in set(audit.get("failed", []))
     # search + signups from the metrics source (fake until Search Console is connected)
     try:
         from datetime import date, timedelta

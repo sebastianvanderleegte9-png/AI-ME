@@ -66,7 +66,7 @@ def interview(founder_id: uuid.UUID, body: InterviewIn, db: Session = Depends(ge
 @router.get("/founders/{founder_id}/feed")
 def feed(founder_id: uuid.UUID, state: str = "pending", db: Session = Depends(get_db)):
     """The approval feed: what the founder sees on their phone. Oldest slot first."""
-    q = select(Job).where(Job.founder_id == founder_id, Job.type.in_(["post", "reply", "launch_task", "outreach"]))
+    q = select(Job).where(Job.founder_id == founder_id, Job.type.in_(["post", "reply", "launch_task", "outreach", "site_change"]))
     if state != "all":
         q = q.where(Job.state == state)
     jobs = db.scalars(q.order_by(Job.scheduled_for.nulls_last(), Job.created_at)).all()

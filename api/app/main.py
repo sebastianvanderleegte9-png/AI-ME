@@ -5,7 +5,7 @@ from sqlalchemy import text
 
 from .db import engine, migrate
 from .queue import redis
-from .routers import attention, companies, intake, jobs, launches, metrics, pages, relationships, report, scorecard, sequencer, voice
+from .routers import attention, companies, intake, jobs, launches, metrics, pages, relationships, report, scorecard, sequencer, site, voice
 from .settings import settings
 
 
@@ -29,6 +29,7 @@ app.include_router(sequencer.router)
 app.include_router(pages.router)
 app.include_router(launches.router)
 app.include_router(relationships.router)
+app.include_router(site.router)
 
 
 @app.get("/health")
