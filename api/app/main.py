@@ -11,8 +11,10 @@ from .settings import settings
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    print(f"lifespan startup: app_env={settings.app_env!r}", flush=True)
     if settings.app_env != "test":
         migrate()
+    print("lifespan startup: complete", flush=True)
     yield
 
 
