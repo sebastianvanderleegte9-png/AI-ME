@@ -72,6 +72,18 @@ def start_verify(db: Session, f: Founder, phone: str) -> str:
     return code
 
 
+def verify_code(db: Session, f: Founder, code: str) -> bool:
+    """Confirm a typed code without going through the inbound-SMS webhook — used by the
+    setup wizard's fake-mode code box, since there's no real text to reply to there."""
+    st = _state(db, f)
+    if st.pending_verify and code.strip() == st.pending_verify:
+        f.phone_verified_at = datetime.now(timezone.utc)
+        st.pending_verify = None
+        db.commit()
+        return True
+    return False
+
+
 def pending_items(db: Session, f: Founder, limit: int = 8) -> list[dict]:
     jobs = db.scalars(select(Job).where(Job.founder_id == f.id, Job.state == "pending",
                                         Job.type.in_(["post", "reply", "launch_task", "site_change", "outreach"]))

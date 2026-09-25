@@ -111,8 +111,8 @@ def step4(s, sent: bool = False, code_hint: str | None = None, error=None) -> st
     if sent:
         return shell("Phone", f"""
 <h1>Check your phone</h1><p class="sub">We texted a 6-digit code to <b>{e(d.get('phone',''))}</b>. Reply to that text with the code, then come back here.</p>
-{f'<p class="note">Local/test mode: the code is <code>{e(code_hint)}</code>. POST it to <code>/public/sms/inbound</code> as the founder to simulate the reply.</p>' if code_hint else ''}
-<form method="post" action="/setup/{e(s.token)}/4/check"><button>I replied →</button></form>
+{f'''<p class="note">Fake SMS mode: your code is <code>{e(code_hint)}</code> — no real text was sent.</p>
+<form method="post" action="/setup/{e(s.token)}/4/verify"><input name="code" placeholder="6-digit code" maxlength="6" autofocus><button>Verify →</button></form>''' if code_hint else f'<form method="post" action="/setup/{e(s.token)}/4/check"><button>I replied →</button></form>'}
 <form method="post" action="/setup/{e(s.token)}/4"><input type="hidden" name="phone" value="{e(d.get('phone',''))}"><button class="btn ghost">Resend the code</button></form>
 {f'<p style="color:#f87171">{e(error)}</p>' if error else ''}""", 4)
     return shell("Phone", f"""

@@ -18,6 +18,9 @@ from ..settings import settings
 
 router = APIRouter(tags=["onboarding"])
 SYNC = settings.app_env in ("local", "test")   # run background steps inline where there may be no worker
+# Show the verify code on-screen whenever SMS is fake, regardless of environment — with a real
+# messaging provider there's a real text to check instead, but fake mode has nothing to check.
+SHOW_CODE_HINT = settings.messaging_provider == "fake"
 
 
 def _sess(db: Session, token: str):
@@ -88,7 +91,7 @@ def show(token: str, step: int, db: Session = Depends(get_db)):
     if step == 3:
         return pages.step3(s)
     if step == 4:
-        return pages.step4(s, sent=bool((s.data or {}).get("phone")), code_hint=(s.data or {}).get("code_hint") if SYNC else None)
+        return pages.step4(s, sent=bool((s.data or {}).get("phone")), code_hint=(s.data or {}).get("code_hint") if SHOW_CODE_HINT else None)
     if step == 5:
         return pages.step5(s)
     if step == 6:
@@ -178,7 +181,7 @@ def post4(token: str, phone: str = Form(...), db: Session = Depends(get_db)):
     if not phone.startswith("+") or not phone[1:].isdigit():
         return HTMLResponse(pages.step4(s, error="use the international format, e.g. +13055551234"), status_code=422)
     code = flow.step4_phone(db, s, phone)
-    if SYNC:
+    if SHOW_CODE_HINT:
         s.data = {**s.data, "code_hint": code}
         db.commit()
     return _go(s, 4)
@@ -189,8 +192,22 @@ def post4_check(token: str, db: Session = Depends(get_db)):
     s = _sess(db, token)
     if flow.phone_is_verified(db, s):
         return _go(s, 5)
-    return HTMLResponse(pages.step4(s, sent=True, code_hint=(s.data or {}).get("code_hint") if SYNC else None,
+    return HTMLResponse(pages.step4(s, sent=True, code_hint=(s.data or {}).get("code_hint") if SHOW_CODE_HINT else None,
                                     error="not verified yet: reply to the text with the code, then tap again"), status_code=409)
+
+
+@router.post("/setup/{token}/4/verify")
+def post4_verify(token: str, code: str = Form(...), db: Session = Depends(get_db)):
+    """Fake-mode only: confirms the on-screen code directly, since there's no real text to reply to."""
+    if not SHOW_CODE_HINT:
+        raise HTTPException(404)
+    from ..sms import engine as sms_engine
+    s = _sess(db, token)
+    f = db.get(Founder, s.founder_id)
+    if f and sms_engine.verify_code(db, f, code):
+        return _go(s, 5)
+    return HTMLResponse(pages.step4(s, sent=True, code_hint=(s.data or {}).get("code_hint"),
+                                    error="that code didn't match — try again"), status_code=409)
 
 
 @router.post("/setup/{token}/5")
