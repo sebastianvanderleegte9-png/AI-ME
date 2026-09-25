@@ -1,6 +1,9 @@
 from contextlib import asynccontextmanager
 
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 
 from .db import engine, migrate
@@ -37,6 +40,8 @@ app.include_router(learning.router)
 app.include_router(sms.router)
 app.include_router(onboarding.router)
 app.include_router(meetings.router)
+# Homepage images (iPhone mockup, example posts) for the marketing site at /
+app.mount("/static", StaticFiles(directory=Path(__file__).resolve().parent / "static"), name="static")
 
 
 @app.get("/health")

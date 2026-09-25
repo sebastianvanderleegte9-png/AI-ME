@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI-ME — Growth &amp; Client Acquisition System</title>
+<meta name="description" content="AI-ME is the growth and client acquisition system for founders: content, audience growth, outreach, follow-ups, meetings and your pipeline, run by text.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter+Tight:wght@400;500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--ui:"Inter",system-ui,sans-serif;--disp:"Instrument Serif",Georgia,serif;--head:"Inter Tight","Inter",sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+--bg:#000000;--hair:#292d30;--white:#ffffff;--bone:#f0f0f0;--ash:#a1a4a5;--smoke:#abafb4;--iron:#6e727a;--char:#464a4d;
+--violet:#9281f7;--violet2:#baa7ff;--blue:#3b9eff;--sky:#70b8ff;--green:#3ad389;--red:#ff9592;--amber:#ffca16}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--bone);font:16px/1.5 var(--ui);-webkit-font-smoothing:antialiased}
+a{color:var(--smoke);text-decoration:none}a:hover{color:var(--white)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+h1,h2,h3,h4{margin:0;font-weight:400;color:var(--white)}
+h1{font-family:var(--disp);font-size:96px;line-height:1;letter-spacing:-.01em}
+h2{font-family:var(--head);font-size:56px;line-height:1.1;letter-spacing:-.05em}
+h3{font-family:var(--ui);font-size:24px;font-weight:500;line-height:1.5}
+.mono{font-family:var(--mono);font-size:13px;line-height:1.5;color:var(--ash)}
+.mono .v{color:var(--violet)}.mono .b{color:var(--blue)}.mono .g{color:var(--green)}.mono .r{color:var(--red)}.mono .y{color:var(--amber)}
+.muted{color:var(--ash)}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--hair);border-radius:9999px;padding:6px 12px;font-size:14px;color:var(--bone)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+.btn{display:inline-flex;align-items:center;gap:8px;background:transparent;border:1px solid var(--hair);border-radius:6px;padding:12px 16px;color:var(--white);font:500 14px/1 var(--ui);cursor:pointer;transition:border-color .15s ease-out}
+.btn:hover{border-color:var(--white);color:var(--white)}
+.btn.plain{border-color:transparent;color:var(--bone)}.btn.plain:hover{border-color:var(--hair)}
+nav{height:64px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:inline-flex;align-items:center;gap:10px;color:var(--white);font-weight:500;font-size:15px}.logo:hover{color:var(--white)}
+.logo i{width:20px;height:20px;border-radius:6px;border:1px solid var(--hair);display:inline-block;position:relative}
+.logo i:after{content:"";position:absolute;inset:6px;border-radius:2px;background:var(--white)}
+nav .links{display:flex;gap:28px;font-size:14px}nav .links a{color:var(--bone)}
+.card{background:var(--bg);border:1px solid var(--hair);border-radius:16px;padding:32px}
+.term{background:var(--bg);border:1px solid var(--hair);border-radius:16px;padding:24px;font-family:var(--mono);font-size:13px;line-height:1.7;color:var(--bone)}
+.term .tl{display:flex;gap:6px;margin-bottom:16px}.term .tl b{width:8px;height:8px;border-radius:50%;background:var(--hair);display:block}
+.term .c{color:var(--ash)}.term .v{color:var(--violet)}.term .b{color:var(--blue)}.term .g{color:var(--green)}.term .r{color:var(--red)}.term .y{color:var(--amber)}
+.phone{width:340px;border:1px solid var(--hair);border-radius:16px;padding:14px 16px 24px;background:var(--bg);display:flex;flex-direction:column;gap:10px}
+.phone .top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--ash);padding:0 4px 12px;border-bottom:1px solid var(--hair);margin-bottom:4px}
+.msg{max-width:88%;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.45;white-space:pre-line;position:relative}
+.msg.in{border:1px solid var(--hair);align-self:flex-start;color:var(--bone)}
+.msg.out{border:1px solid var(--iron);min-width:120px;text-align:right;color:var(--white);align-self:flex-end;font-family:var(--mono);font-size:13px}
+.phone .who{font-family:var(--mono);font-size:11px;color:var(--ash);padding:0 4px}.phone .who.r{text-align:right}
+.ico{width:48px;height:48px;border-radius:16px;background:linear-gradient(to bottom right in oklab,#9281f7 0%,#9a54dc 100%);display:flex;align-items:center;justify-content:center;color:#fff;flex:none}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{font-family:var(--mono);font-size:12px;font-weight:400;color:var(--ash);text-align:left;padding:0 0 12px;border-bottom:1px solid var(--hair)}
+.tbl td{padding:12px 0;border-bottom:1px solid var(--hair);color:var(--bone);vertical-align:middle}
+.tbl td.m{font-family:var(--mono);font-size:12px;padding-right:12px}
+.sdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:middle}
+section{padding:96px 0;border-top:1px solid var(--hair)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.split .txt{display:flex;flex-direction:column;gap:16px;max-width:480px}
+.split .txt h2{font-size:44px}
+.split .txt p{margin:0;color:var(--ash)}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.list li{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--bone)}
+.list li b{font-weight:500;color:var(--white)}
+.list li .tag{font-family:var(--mono);font-size:12px;color:var(--amber);border:1px solid var(--hair);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+.list li svg{flex:none;margin-top:4px;color:var(--iron)}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.cap{border:1px solid var(--hair);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:8px;min-height:190px}
+.cap .k{font-family:var(--mono);font-size:12px;color:var(--ash)}
+.cap .o{font-family:var(--mono);font-size:12px;line-height:1.5;border-top:1px solid var(--hair);padding-top:10px;margin-top:auto;color:var(--bone);white-space:pre-line}.cap .o .v{color:var(--violet)}.cap .o .g{color:var(--green)}.cap .o .b{color:var(--blue)}.cap .o .y{color:var(--amber)}.cap .o .r{color:var(--red)}
+.cap h4{font-size:16px;font-weight:500}.cap p{margin:0;font-size:14px;color:var(--ash)}
+.cap .soon{font-family:var(--mono);font-size:11px;color:var(--amber);border:1px solid var(--hair);border-radius:6px;padding:1px 6px;align-self:flex-start}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.plan{border:1px solid var(--hair);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:8px}
+.plan.pick{border-color:var(--iron)}
+.plan .price{font-family:var(--head);font-size:44px;letter-spacing:-.04em;color:var(--white);line-height:1.1;margin-top:8px}.plan .price small{font-family:var(--ui);font-size:14px;color:var(--ash);letter-spacing:0}
+.plan ul{list-style:none;margin:16px 0 24px;padding:0;display:flex;flex-direction:column;gap:10px;flex:1}
+.plan li{display:flex;gap:10px;font-size:14px;color:var(--bone)}.plan li svg{flex:none;margin-top:4px;color:var(--green)}
+.plan .btn{justify-content:center}
+.faq details{border-top:1px solid var(--hair);padding:20px 0}.faq details:last-of-type{border-bottom:1px solid var(--hair)}
+.faq summary{cursor:pointer;font-size:17px;color:var(--white);list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"+";font-family:var(--mono);color:var(--ash)}.faq details[open] summary:after{content:"–"}
+.faq p{margin:10px 0 0;color:var(--ash);max-width:640px}
+footer{border-top:1px solid var(--hair);padding:64px 0 40px}
+.fgrid{display:grid;grid-template-columns:1.4fr repeat(3,minmax(0,1fr));gap:32px}
+.fgrid h4{font-size:14px;font-weight:500;margin:0 0 12px}
+.fgrid a{display:block;font-size:14px;color:var(--ash);padding:4px 0}.fgrid a:hover{color:var(--white)}
+.fgrid p{font-size:14px;color:var(--ash);max-width:280px;margin:12px 0 0}
+
+.iph{position:relative;width:340px;height:677px;flex:none}
+.iph>img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.iph .scr{position:absolute;left:15px;top:8px;width:310px;height:659px;border-radius:40px;overflow:hidden;background:transparent;display:flex;flex-direction:column;padding:0 12px 22px;font-family:-apple-system,"SF Pro Text","Inter",system-ui,sans-serif}
+.iph .sb{display:flex;justify-content:space-between;align-items:center;height:50px;padding:0 20px 0 22px;font-size:14px;font-weight:600;color:#fff;flex:none}
+.iph .sb svg{display:block}
+.iph .hdr{display:flex;flex-direction:column;align-items:center;gap:4px;padding:2px 0 10px;border-bottom:1px solid #1c1c1e;flex:none}
+.iph .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(180deg,#8e8e93,#636366);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:500}
+.iph .nm{font-size:11px;color:#fff;display:flex;align-items:center;gap:2px}
+.iph .th{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:5px;overflow:hidden;padding-top:8px}
+.iph .ts{align-self:center;font-size:10.5px;color:#8e8e93;margin:2px 0 4px}
+.iph .bb{max-width:80%;padding:7px 11px;border-radius:17px;font-size:13.5px;line-height:1.32;white-space:pre-line;color:#fff}
+.iph .bb.in{background:#26252a;align-self:flex-start;border-bottom-left-radius:6px}
+.iph .bb.out{background:#0a84ff;align-self:flex-end;border-bottom-right-radius:6px}
+.iph .ip{display:flex;align-items:center;gap:8px;flex:none;margin-top:10px}.iph .ip .pl{width:30px;height:30px;border-radius:50%;background:#26252a;color:#8e8e93;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1}.iph .ip .fd{flex:1;height:32px;border:1px solid #3a3a3c;border-radius:16px;display:flex;align-items:center;padding:0 12px;font-size:14px;color:#636366}
+.iph .dl{align-self:flex-end;font-size:10.5px;color:#8e8e93;margin-top:-1px}
+
+.demo{display:grid;grid-template-columns:340px 1fr;gap:40px;align-items:center}
+.chk{border:1px solid var(--hair);border-radius:16px;padding:24px;height:677px;display:flex;flex-direction:column}
+.chk-h{display:flex;justify-content:space-between;margin-bottom:12px}
+.bar{height:2px;background:var(--hair);margin-bottom:14px;overflow:hidden;border-radius:1px}.bar b{display:block;height:100%;background:var(--green);transition:width .5s ease}
+.rows{display:flex;flex-direction:column;gap:2px;flex:1}
+.row{display:grid;grid-template-columns:20px 24px 1fr;gap:10px;align-items:start;padding:7px 10px;border:1px solid transparent;border-radius:6px;transition:border-color .3s,opacity .3s;opacity:.42}
+.row .box{width:18px;height:18px;border:1px solid var(--iron);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-top:1px;color:#000;transition:background-color .3s,border-color .3s}
+.row .tick{opacity:0;transform:scale(.4);transition:opacity .3s,transform .3s}
+.row.done{opacity:1}.row.done .box{background:var(--green);border-color:var(--green)}.row.done .tick{opacity:1;transform:none}
+.row.active{opacity:1;border-color:var(--hair)}.row.active .box{border-color:var(--white)}
+.rn{font-family:var(--mono);font-size:12px;color:var(--ash);padding-top:2px}
+.rt{display:flex;flex-direction:column;gap:2px}.rtt{font-size:14.5px;color:var(--white)}
+.rs{font-size:13px;color:var(--ash);display:none}.row.active .rs{display:block;animation:fadeup .4s ease-out both}
+.th .bb{animation:pop .35s ease-out both}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}}
+@keyframes fadeup{from{opacity:0;transform:translateY(4px)}}
+.bb.typ{display:flex;gap:4px;padding:11px 13px}.bb.typ i{width:7px;height:7px;border-radius:50%;background:#8e8e93;animation:tdot 1.2s infinite}.bb.typ i:nth-child(2){animation-delay:.2s}.bb.typ i:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{opacity:.3}30%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.th .bb,.row,.row .tick,.bar b,.rs{animation:none!important;transition:none!important}}
+.idx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px;border-top:1px solid var(--hair)}
+.idx a{display:flex;align-items:baseline;gap:16px;padding:16px 0;border-bottom:1px solid var(--hair);color:var(--white);font-size:18px}
+.idx a:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--iron)}
+.idx a span{font-family:var(--mono);font-size:12px;color:var(--ash);width:24px;flex:none}
+.idx a em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--amber);border:1px solid var(--hair);border-radius:6px;padding:1px 6px;margin-left:auto}
+.feat{display:flex;flex-direction:column;gap:10px;padding-top:16px;border-top:1px solid var(--hair)}
+.fh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.fn{font-family:var(--mono);font-size:12px;color:var(--ash)}
+.feat h3{font-size:20px;font-weight:500;line-height:1.3}
+.feat .tag{font-family:var(--mono);font-size:11px;color:var(--amber);border:1px solid var(--hair);border-radius:6px;padding:1px 6px}
+.feat ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.feat li{position:relative;padding-left:18px;color:var(--bone);font-size:15px;line-height:1.5}
+.feat li:before{content:"";position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--iron)}
+.fgrid5{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+.fgrid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;max-width:1000px;margin:0 auto;width:100%}
+.inb{display:grid;grid-template-columns:8px 64px 96px 1fr 36px;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--hair);font-size:14px}
+.inb .sdot{margin:0}.inb .ch{font-family:var(--mono);font-size:11px;color:var(--ash)}.inb b{font-weight:500;color:var(--white)}
+.inb .sn{color:var(--ash);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.inb .tm{font-family:var(--mono);font-size:11px;color:var(--ash);text-align:right}
+.crm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.crm div{border:1px solid var(--hair);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}.crm b{font-weight:500;color:var(--white);font-size:14px}
+.cal{display:grid;grid-template-columns:60px repeat(4,minmax(0,1fr));gap:8px;align-items:center;margin-bottom:8px}
+.slot{border:1px solid var(--hair);border-radius:6px;padding:8px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--bone)}
+.slot.on{border-color:var(--white);color:var(--white)}.slot.x{color:var(--char);text-decoration:line-through}
+.kpi{border:1px solid var(--hair);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.kpi b{font-family:var(--head);font-size:36px;letter-spacing:-.04em;color:var(--white);font-weight:400;line-height:1.1}
+
+.iph .bb .lb{display:block;font-size:10.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:#8e8e93;margin-bottom:3px}
+.iph .bb.out .lb{color:rgba(255,255,255,.72);font-weight:500;text-transform:none;letter-spacing:0;font-size:11px}
+.demo .iph .th{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 48px);mask-image:linear-gradient(to bottom,transparent 0,#000 48px)}
+
+.tk{border-top:1px solid var(--hair)}
+.tkr{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:32px;padding:18px 0;border-bottom:1px solid var(--hair);align-items:baseline;font-size:15px}
+.tkr b{font-weight:500;color:var(--white);font-size:17px}
+.tkr span{color:var(--ash)}.tkr span:nth-child(2){text-decoration:line-through;text-decoration-color:var(--char)}
+.tkr span:last-child{color:var(--bone)}.tkr em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--green)}
+.tkh{padding:0 0 12px}.tkh span{text-decoration:none!important;color:var(--ash)!important}
+
+.posts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}
+.posts figure{margin:0;display:flex;flex-direction:column;gap:14px}
+.posts img{width:100%;height:auto;display:block;border-radius:16px}
+.posts .b{color:var(--blue)}.posts .v{color:var(--violet)}
+
+.memo{border:1px solid var(--hair);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.memo-h{font-size:18px;font-weight:500;color:var(--white)}
+.memo p{margin:0;color:var(--ash);font-size:15px;line-height:1.55}
+.scale{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.scale div{border:1px solid var(--hair);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.scale b{font-weight:500;font-size:13.5px;color:var(--bone);line-height:1.35}
+.scale div.on{border-color:var(--green)}.scale div.on .mono{color:var(--green)}
+
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.st{border:1px solid var(--hair);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:8px}
+.st.on{border-color:var(--green)}
+.st .sn{font-family:var(--mono);font-size:12px;color:var(--ash)}.st.on .sn{color:var(--green)}
+.st h4{font-size:17px;font-weight:500;color:var(--white);margin:0}
+.st p{margin:0;font-size:14px;color:var(--ash);line-height:1.5;flex:1}
+.st .sx{font-family:var(--mono);font-size:11.5px;color:var(--bone);border-top:1px solid var(--hair);padding-top:10px;margin-top:4px;line-height:1.5}
+.st .sx .c{color:var(--ash)}.st .sx .g{color:var(--green)}.st .sx .v{color:var(--violet)}.st .sx .y{color:var(--amber)}
+
+@media (max-width: 1000px){
+  h1{font-size:64px!important} h2{font-size:40px}
+  .demo{grid-template-columns:1fr;justify-items:center}.chk{height:auto;width:100%}
+  .split{grid-template-columns:1fr;gap:40px}.split .iph{justify-self:center!important}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fgrid5,.fgrid2,.plans,.posts{grid-template-columns:1fr}
+  .idx{grid-template-columns:1fr}
+  .tkr{grid-template-columns:1fr;gap:6px}
+  #calls .wrap>div[style*="grid-template-columns:1fr 340px"]{grid-template-columns:1fr!important;justify-items:center}
+  #numbers .wrap>div[style*="grid-template-columns:1.2fr 1fr"]{grid-template-columns:1fr!important}
+  #numbers .card>div[style*="repeat(5"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .faq .wrap{grid-template-columns:1fr!important}
+  .fgrid{grid-template-columns:1fr 1fr}
+  nav .links{display:none}
+  .card{overflow-x:auto}
+}
+@media (max-width: 560px){
+  .wrap{padding:0 18px} h1{font-size:44px!important} h2{font-size:32px} section{padding:64px 0}
+  .steps{grid-template-columns:1fr}
+  .iph{transform:scale(.9);transform-origin:top center}
+}
+#thread{display:flex;flex-direction:column;gap:5px}
+</style>
+</head>
+<body>
+<div style="width: 100%;">
+
+<div class="wrap"><nav>
+<a class="logo" href="/"><i></i>AI-ME</a>
+<div class="links"><a href="#demo">Demo</a><a href="#takeover">What it takes over</a><a href="#start">Get started</a><a href="#features">Features</a><a href="#outreach">Outreach</a><a href="#calls">Calls</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></div>
+<div style="display:flex;gap:8px"><a class="btn plain" href="/start">Sign in</a><a class="btn" href="/start">Run your free diagnostic</a></div>
+</nav></div>
+
+<header class="wrap" style="padding:88px 32px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:26px">
+<span class="pill"><span class="dot"></span>The Growth &amp; Client Acquisition System for founders</span>
+<h1 style="max-width: 1080px">Your Systematic Marketing Engineer&nbsp; &nbsp;</h1>
+<p style="margin:0;max-width:680px;font-size:20px;line-height:1.5;color:var(--ash)">14 interconnected systems run around the clock: voice-matched content generation, audience and conversation mapping, prospect research and ICP modeling, intent scoring, multi-channel outreach across LinkedIn, X and email, adaptive follow-up sequencing, calendar sync, a self-updating CRM and live performance tracking, all sharing one memory of your company, your voice and your pipeline. You approve by text. AI-ME runs the rest.</p>
+<div style="display:flex;gap:8px"><a class="btn" href="/start">Run your free growth diagnostic</a><a class="btn plain" href="#features">See everything it runs</a></div>
+<div class="mono">one system · 14 capabilities · run from your phone · <span class="g">nothing</span> goes out without your yes</div>
+</header>
+
+<section id="demo" style="border-top:0;padding-top:24px"><div class="wrap">
+<div class="demo">
+<div class="iph">
+<img src="/static/site/iphone.png" alt="iPhone showing the text thread that runs everything">
+<div class="scr">
+<div class="sb"><span>9:41</span><span style="display:flex;gap:5px;align-items:center"><svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="#fff"></rect><rect x="4.5" y="5" width="3" height="6" rx="1" fill="#fff"></rect><rect x="9" y="2.5" width="3" height="8.5" rx="1" fill="#fff"></rect><rect x="13.5" y="0" width="3" height="11" rx="1" fill="#fff"></rect></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.2c2 0 3.8.8 5.2 2.1l1.1-1.1A8.9 8.9 0 0 0 7.5.6 8.9 8.9 0 0 0 1.2 3.2l1.1 1.1A7.3 7.3 0 0 1 7.5 2.2zm0 3.2c1.1 0 2.1.4 2.9 1.1l1.1-1.1a5.7 5.7 0 0 0-8 0l1.1 1.1c.8-.7 1.8-1.1 2.9-1.1zm0 3.2c.4 0 .7.1 1 .4L7.5 10 6.5 9c.3-.3.6-.4 1-.4z" fill="#fff"></path></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="#fff" stroke-opacity=".4" fill="none"></rect><rect x="2" y="2" width="16" height="8" rx="2" fill="#fff"></rect><path d="M23 4v4c.8-.3 1.3-1.1 1.3-2S23.8 4.3 23 4z" fill="#fff" fill-opacity=".4"></path></svg></span></div>
+<div class="hdr"><div class="av"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z" fill="#fff"></path></svg></div><div class="nm">AI-ME<svg width="7" height="10" viewBox="0 0 7 10"><path d="M1.5 1l4 4-4 4" stroke="#8e8e93" stroke-width="1.4" fill="none" stroke-linecap="round"></path></svg></div></div>
+<div class="th">
+<div class="ts">Today 7:58 AM</div>
+<div id="thread"></div>
+</div>
+<div class="ip"><div class="pl">+</div><div class="fd">Text message</div></div>
+</div>
+</div>
+
+<div class="chk">
+<div class="chk-h"><span class="mono">running now</span><span class="mono"><span id="done" style="color:var(--white)">0</span> / 14 systems</span></div>
+<div class="bar"><b id="pbar" style="width:0%"></b></div>
+<div class="rows" id="rows"></div>
+</div>
+</div>
+</div></section>
+
+<section id="takeover"><div class="wrap">
+<div style="display:flex;flex-direction:column;gap:16px;max-width:820px;margin-bottom:48px"><div class="mono">what AI-ME takes over</div><h2 style="position: relative">Your competitors are hiring. You're texting.</h2><p class="muted" style="margin:0;font-size:18px">Not a content tool, not a scheduler, not a CRM. AI-ME replaces the work of a growth marketer, a social media manager, an SDR and a scheduling assistant, and runs it as one system.</p></div>
+<div class="tk">
+<div class="tkr tkh"><span class="mono">the work</span><span class="mono">before AI-ME</span><span class="mono">with AI-ME</span></div>
+<div class="tkr"><b>Social media content</b><span>Writing posts and threads at night</span><span>Drafted from a voice memo. You see every post first. <em>Approve or revise by text.</em></span></div>
+<div class="tkr"><b>Replies and audience growth</b><span>Scrolling for conversations to join</span><span>The right posts and people found for you. <em>You approve.</em></span></div>
+<div class="tkr"><b>Outreach</b><span>Researching and writing every message</span><span>Researched, personalized and sent on LinkedIn, X and email. <em>You approve.</em></span></div>
+<div class="tkr"><b>Follow-ups and pipeline</b><span>Spreadsheets and forgotten follow-ups</span><span>Scored, followed up and tracked automatically.</span></div>
+<div class="tkr"><b>Client acquisition and meetings</b><span>Back-and-forth to find a time</span><span>Booked from your calendar, briefed before every call. <em>You approve.</em></span></div>
+<div class="tkr"><b>Reporting</b><span>Guessing what is working</span><span>The five numbers that matter, every week.</span></div>
+</div>
+</div></section>
+
+<section id="start"><div class="wrap">
+<div style="display:flex;justify-content:space-between;align-items:end;gap:32px;flex-wrap:wrap;margin-bottom:40px">
+<div style="display:flex;flex-direction:column;gap:16px;max-width:720px"><div class="mono">getting started · 10 minutes · diagnostic runs free</div><h2>We diagnose before we prescribe.</h2><p class="muted" style="margin:0;font-size:18px">Ten minutes of setup. Then AI-ME runs a full diagnostic on your growth and shows you exactly what it will fix, before you pay a cent.</p></div>
+<a class="btn" href="/start">Start setup</a>
+</div>
+<div class="steps">
+<div class="st"><div class="sn">01</div><h4>Your company</h4><p>Name, website, one line on what you do, and who the founder is.</p><div class="sx"><span class="c">company</span> Vantora · vantora.dev</div></div>
+<div class="st"><div class="sn">02</div><h4>Your best customers</h4><p>Three customers you love and why they bought. This seeds your customer profile.</p><div class="sx"><span class="c">why they bought</span> "reviews in under a minute"</div></div>
+<div class="st"><div class="sn">03</div><h4>Connect accounts</h4><p>LinkedIn and X for your company and your founder profile. Email and calendar too.</p><div class="sx"><span class="g">✓</span> linkedin <span class="g">✓</span> x <span class="g">✓</span> outlook</div></div>
+<div class="st"><div class="sn">04</div><h4>Your phone number</h4><p>Enter your number and confirm the 6-digit code we text you. This becomes your control line.</p><div class="sx"><span class="c">code sent to</span> +1 ••• ••• 2025 · <span class="v">482913</span></div></div>
+<div class="st"><div class="sn">05</div><h4>Your preferences</h4><p>What time the daily brief arrives, your timezone, and whether AI-ME picks posting times for you.</p><div class="sx"><span class="c">brief</span> 8:00 AM · <span class="c">tz</span> America/New_York</div></div>
+<div class="st"><div class="sn">06</div><h4>Free growth diagnostic</h4><p>AI-ME runs a full diagnostic on your growth across every channel, finds your biggest gap, and builds a 90-day plan. No card needed.</p><div class="sx"><span class="c">growth score</span> <span class="y">4.2 / 10</span> · biggest gap: outreach</div></div>
+<div class="st"><div class="sn">07</div><h4>Choose your plan</h4><p>Growth, Scale or High Growth. Nothing posts or sends until you are live.</p><div class="sx"><span class="c">plan</span> AI-ME Growth · $3,000/mo</div></div>
+<div class="st on"><div class="sn">08</div><h4>First text from AI-ME</h4><p>Your score, your first move, and a request for your first voice memo. You are live.</p><div class="sx"><span class="g">● live</span> first brief tomorrow 8:00 AM</div></div>
+</div>
+</div></section>
+
+<section id="features"><div class="wrap">
+<div style="display:flex;flex-direction:column;gap:16px;max-width:760px;margin-bottom:48px"><div class="mono">everything included · 14 capabilities</div><h2>Everything a growth team does. One system.</h2><p class="muted" style="margin:0;font-size:18px">Here is exactly what AI-ME runs for you. Marked <span class="mono" style="color:var(--amber)">soon</span> means on the roadmap and not live yet.</p></div>
+<div class="idx">
+<a href="#text"><span>01</span>SMS Control System</a>
+<a href="#text"><span>02</span>AI Command Center / Daily Brief</a>
+<a href="#content"><span>03</span>AI Content Engine</a>
+<a href="#content"><span>04</span>Content &amp; Audience Growth</a>
+<a href="#outreach"><span>05</span>Outreach</a>
+<a href="#outreach"><span>06</span>AI Prospect Research + ICP Builder<em>soon</em></a>
+<a href="#outreach"><span>07</span>Lead Scoring / Intent Detection<em>soon</em></a>
+<a href="#outreach"><span>08</span>Automated Follow-Up Sequences<em>soon</em></a>
+<a href="#outreach"><span>09</span>AI Next Best Action<em>soon</em></a>
+<a href="#inbox"><span>10</span>Unified Inbox<em>soon</em></a>
+<a href="#inbox"><span>11</span>Lightweight CRM<em>soon</em></a>
+<a href="#calls"><span>12</span>Scheduling<em>soon</em></a>
+<a href="#calls"><span>13</span>Meeting Intelligence<em>soon</em></a>
+<a href="#numbers"><span>14</span>Simple Performance Dashboard</a>
+</div>
+</div></section>
+
+<section id="text"><div class="wrap split">
+<div class="txt">
+<div class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M4 5h16v11H9l-5 4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg></div>
+<h2>Run the whole thing by text.</h2>
+<div class="feat"><div class="fh"><span class="fn">01</span><h3>SMS Control System</h3></div><ul><li>Control AI-ME directly through text messages.</li><li>Approve, reject, edit, or trigger actions without opening the app.</li></ul></div>
+<div class="feat"><div class="fh"><span class="fn">02</span><h3>AI Command Center / Daily Brief</h3></div><ul><li>Central homepage showing what AI-ME recommends doing each day.</li><li>Shows posts, replies, leads, follow-ups, meetings, and important opportunities that need attention.</li></ul></div>
+</div>
+<div class="iph" style="justify-self:end"><img src="/static/site/iphone.png" alt="iPhone showing the daily brief"><div class="scr"><div class="sb"><span>9:41</span><span style="display:flex;gap:5px;align-items:center"><svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="#fff"></rect><rect x="4.5" y="5" width="3" height="6" rx="1" fill="#fff"></rect><rect x="9" y="2.5" width="3" height="8.5" rx="1" fill="#fff"></rect><rect x="13.5" y="0" width="3" height="11" rx="1" fill="#fff"></rect></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="#fff" stroke-opacity=".4" fill="none"></rect><rect x="2" y="2" width="16" height="8" rx="2" fill="#fff"></rect></svg></span></div><div class="hdr"><div class="av"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z" fill="#fff"></path></svg></div><div class="nm">AI-ME</div></div><div class="th"><div class="ts">Tue 8:00 AM</div><div class="bb in"><span class="lb">Today · 5 items</span>1  LinkedIn post: the onboarding story
+2  X post: "41 of our first 50 customers came from replies"
+3  Reply to @mara_k (hot lead)
+4  Follow-up to Tom at Harbor
+5  Call with Dana at 10:30</div><div class="bb out"><span class="lb">↳ Today · items 1–5</span>yes 1 3 5, no 2, edit 4: mention the pilot</div><div class="bb in"><span class="lb">#1–#5 · Done</span>1, 3, 5 approved. 2 dropped. 4 edited, sends at 11:00.</div><div class="dl">Delivered</div></div><div class="ip"><div class="pl">+</div><div class="fd">Text Message</div></div></div></div>
+</div></section>
+
+<section id="content"><div class="wrap split">
+<div class="term" style="align-self:stretch">
+<div class="tl"><b></b><b></b><b></b></div>
+<span class="c"># voice-memo.m4a · 12m40s</span><br>
+<span class="c">idea 1</span>  "half never finished the onboarding video"<br>
+<span class="c">idea 2</span>  "one agent saved four hours a week"<br>
+<span class="c">idea 3</span>  "41 of our first 50 customers came from replies"<br><br>
+<span class="c">→ </span><span class="b">linkedin post</span><span class="c">   idea 1 · </span><span class="g">3 variations</span><br>
+<span class="c">→ </span><span class="b">x post</span><span class="c">          idea 2 · </span><span class="g">3 variations</span><br>
+<span class="c">→ </span><span class="b">x thread</span><span class="c">        idea 3 · </span><span class="g">6 posts</span><br>
+<span class="c">→ </span><span class="b">replies</span><span class="c">         4 drafted in your voice</span><br><br>
+<span class="c"># customer profile · updated from this memo</span><br><span class="g">+ buyer</span>      ops leaders at 20–200 agent brokerages<br><span class="g">+ pain</span>       "agents lose Sundays to paperwork"<br><span class="g">+ objection</span>  "we tried AI tools, nobody used them"<br><span class="g">+ trigger</span>    new ops hire or office expansion<br><span class="c">profile</span>      <span class="v">14 memos</span> <span class="c">· 3h 52m of context · sharper every week</span><br><br><span class="c"># growth · this week</span><br>
+<span class="c">engage</span>  <span class="v">@mara_k</span> <span class="c">post · 14k views · your ICP</span><br>
+<span class="c">engage</span>  <span class="v">@priyabuilds</span> <span class="c">thread · asked a question you answer</span><br>
+<span class="c">follow</span>  <span class="v">@dana_ops</span> <span class="c">· Head of Ops · talks about your problem</span><br><br>
+<span class="c">status</span>  <span class="y">holding for your yes</span>
+</div>
+<div class="txt">
+<div class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.8"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
+<h2>Say it once. Post it everywhere.</h2><div class="memo"><div class="memo-h">The longer you talk, the smarter AI-ME gets.</div><p>Every voice memo adds to a living profile of your company and your customers: who buys, why they buy, their pains, their objections and the exact words they use. Your content, outreach, replies and lead scoring all draw from it.</p><div class="scale"><div><span class="mono">2 min</span><b>a post or two</b></div><div><span class="mono">10 min</span><b>a week of content</b></div><div class="on"><span class="mono">20 min+</span><b>a week of content and a sharper customer profile</b></div></div></div>
+<div class="feat"><div class="fh"><span class="fn">03</span><h3>AI Content Engine</h3></div><ul><li>Turn voice memos, notes, or rough ideas into polished content.</li><li>Create LinkedIn posts, X posts, threads, replies, and multiple variations in the founder’s voice.</li></ul></div>
+<div class="feat"><div class="fh"><span class="fn">04</span><h3>Content &amp; Audience Growth</h3></div><ul><li>Help founders grow on X and LinkedIn.</li><li>Recommend posts, replies, conversations, and relevant people to engage with.</li></ul></div>
+</div>
+</div><div class="wrap" style="margin-top: 64px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:20px"><div class="mono">what goes live · only after your yes</div><div class="mono">illustrative</div></div>
+<div class="posts"><figure><img src="/static/site/linkedin-update.png" alt="LinkedIn company post from Vantora: Product update, Vantora now reviews every pull request in under 60 seconds."><figcaption class="mono"><span class="b">linkedin</span> · company update · drafted from the founder's voice memo · posted with <span class="v">yes 1</span></figcaption></figure><figure><img src="/static/site/x-facts.png" alt="X post from Vantora: Vantora, by the numbers: 1.2M pull requests reviewed, 38,000 bugs caught before production."><figcaption class="mono"><span class="b">x</span> · company facts · same voice memo, different shape · posted with <span class="v">yes 2</span></figcaption></figure></div>
+</div>
+</section>
+
+<section id="outreach"><div class="wrap">
+<div style="display:flex;flex-direction:column;gap:16px;max-width:760px;margin-bottom:40px"><div class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><rect x="3.5" y="5.5" width="17" height="13" rx="2" stroke="currentColor" stroke-width="1.8"></rect><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><h2>Outreach that researches, scores and follows up.</h2></div>
+<div class="fgrid5">
+<div class="feat"><div class="fh"><span class="fn">05</span><h3>Outreach</h3></div><ul><li>Manage personalized outbound outreach through LinkedIn, X, and email.</li><li>Track conversations and move prospects toward booked calls.</li></ul></div>
+<div class="feat"><div class="fh"><span class="fn">06</span><h3>AI Prospect Research + ICP Builder</h3><span class="tag">soon</span></div><ul><li>Define the founder’s ideal customer profile.</li><li>Automatically research prospects and companies before outreach so messages are more personalized and targeted.</li></ul></div>
+<div class="feat"><div class="fh"><span class="fn">07</span><h3>Lead Scoring / Intent Detection</h3><span class="tag">soon</span></div><ul><li>Identify which prospects are the best fit and showing the strongest signs of interest.</li><li>Prioritize the leads most likely to become clients.</li></ul></div>
+<div class="feat"><div class="fh"><span class="fn">08</span><h3>Automated Follow-Up Sequences</h3><span class="tag">soon</span></div><ul><li>Automatically follow up with prospects who do not respond.</li><li>Stop or adjust sequences when someone replies, books a meeting, or shows interest.</li></ul></div>
+<div class="feat"><div class="fh"><span class="fn">09</span><h3>AI Next Best Action</h3><span class="tag">soon</span></div><ul><li>Recommend what the founder should do next with every prospect.</li><li>Examples include following up, replying to a post, asking for a call, waiting, or reconnecting later.</li></ul></div>
+</div>
+<div class="card" style="padding:24px;margin-top:40px">
+<div class="mono" style="margin-bottom:16px">icp · ops leaders at 20–200 person brokerages · <span class="v">sorted by intent</span></div>
+<table class="tbl"><tr><th>Prospect</th><th>Channel</th><th>Research</th><th>Fit</th><th>Intent</th><th>Sequence</th><th>Next best action</th></tr>
+<tr><td><span class="sdot" style="background:var(--green)"></span>Dana Reyes · Northwind</td><td class="m"><span style="color:var(--violet)">dana@northwind.co</span></td><td class="m">40 brokerages · hiring ops</td><td class="m">high</td><td class="m"><span class="g">92</span></td><td class="m">stopped · replied</td><td class="m">ask for a call</td></tr>
+<tr><td><span class="sdot" style="background:var(--sky)"></span>Priya Nair · Cove</td><td class="m"><span style="color:var(--violet)">@priyabuilds</span></td><td class="m">raised seed · 12 agents</td><td class="m">high</td><td class="m"><span class="g">81</span></td><td class="m">stopped · booked</td><td class="m">send the deck</td></tr>
+<tr><td><span class="sdot" style="background:var(--violet2)"></span>Tom Alder · Harbor</td><td class="m"><span style="color:var(--violet)">tom@harbor.io</span></td><td class="m">new VP ops in June</td><td class="m">medium</td><td class="m"><span class="y">54</span></td><td class="m">touch 3 of 4 · no reply 4d</td><td class="m">follow up Thu</td></tr>
+<tr><td><span class="sdot" style="background:var(--amber)"></span>Mara K. · agent, FL</td><td class="m"><span style="color:var(--violet)">@mara_k</span></td><td class="m">posts about agent hours</td><td class="m">medium</td><td class="m"><span class="y">47</span></td><td class="m">none</td><td class="m">reply to her post</td></tr>
+<tr><td><span class="sdot" style="background:var(--red)"></span>Lee Chen · Summit</td><td class="m"><span style="color:var(--violet)">lee@summit.re</span></td><td class="m">budget frozen till Q2</td><td class="m">high</td><td class="m"><span class="r">12</span></td><td class="m">paused</td><td class="m">reconnect in May</td></tr>
+</table>
+</div>
+</div></section>
+
+<section id="inbox"><div class="wrap split">
+<div class="txt">
+<div class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M3.5 13l2.5-8h12l2.5 8v6h-17z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path><path d="M3.5 13h5l1 2h5l1-2h5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg></div>
+<h2>Every conversation. One inbox. Zero data entry.</h2>
+<div class="feat"><div class="fh"><span class="fn">10</span><h3>Unified Inbox</h3><span class="tag">soon</span></div><ul><li>Combine LinkedIn, X, email, follow-ups, and meeting-related conversations into one inbox.</li><li>Prioritize important conversations and hot leads.</li></ul></div>
+<div class="feat"><div class="fh"><span class="fn">11</span><h3>Lightweight CRM</h3><span class="tag">soon</span></div><ul><li>Automatically keep track of prospects and clients.</li><li>Store contact details, conversation history, meetings, lead status, and next steps.</li></ul></div>
+</div>
+<div class="card" style="padding:0;overflow:hidden">
+<div class="mono" style="padding:16px 20px;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between"><span>inbox · 9 conversations</span></div>
+<div class="inb"><span class="sdot" style="background:var(--green)"></span><span class="ch">email</span><b>Dana Reyes</b><span class="sn">Thursday works. Can you walk us through the pilot?</span><span class="tm">9:12</span></div>
+<div class="inb"><span class="sdot" style="background:var(--green)"></span><span class="ch">x</span><b>Priya Nair</b><span class="sn">booked Thu 2pm, see you then</span><span class="tm">8:40</span></div>
+<div class="inb"><span class="sdot" style="background:var(--iron)"></span><span class="ch">linkedin</span><b>Mara K.</b><span class="sn">replied to your post on agent hours</span><span class="tm">Tue</span></div>
+<div class="inb"><span class="sdot" style="background:var(--iron)"></span><span class="ch">follow-up</span><b>Tom Alder</b><span class="sn">touch 3 sent, no reply yet</span><span class="tm">Mon</span></div>
+<div style="padding:20px;border-top:1px solid var(--hair)">
+<div class="mono" style="margin-bottom:12px">crm · Dana Reyes · Head of Ops, Northwind</div>
+<div class="crm"><div><span class="mono">status</span><b>meeting booked</b></div><div><span class="mono">touches</span><b>6 across 2 channels</b></div><div><span class="mono">meetings</span><b>Thu 10:30</b></div><div><span class="mono">next step</span><b>send the pilot deck</b></div></div>
+</div>
+</div>
+</div></section>
+
+<section id="calls"><div class="wrap" style="display:flex;flex-direction:column;gap:40px">
+<div class="txt" style="align-items:center;text-align:center;max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:16px"><div class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.8"></rect><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div><h2>Calls that book themselves, and a briefing before each one.</h2></div>
+<div class="fgrid2">
+<div class="feat"><div class="fh"><span class="fn">12</span><h3>Scheduling</h3><span class="tag">soon</span></div><ul><li>Built-in scheduling system that connects to the founder’s calendar.</li><li>Can be embedded on their website so prospects can book available times.</li></ul></div>
+<div class="feat"><div class="fh"><span class="fn">13</span><h3>Meeting Intelligence</h3><span class="tag">soon</span></div><ul><li>Generate a quick 30-second briefing before every call.</li><li>Show who the person is, previous interactions, company information, and suggested talking points.</li></ul></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:center;max-width:1000px;margin:0 auto;width:100%">
+<div class="card" style="padding:24px">
+<div class="mono" style="margin-bottom:6px">yoursite.com/book · embedded</div>
+<div style="font-size:20px;color:var(--white);margin-bottom:18px">Book a 30-minute call</div>
+<div class="cal"><span class="mono">Thu 26</span><span class="slot">9:00</span><span class="slot on">10:30</span><span class="slot">14:00</span><span class="slot">15:30</span></div>
+<div class="cal"><span class="mono">Fri 27</span><span class="slot">9:00</span><span class="slot">11:00</span><span class="slot">13:30</span><span class="slot x">busy</span></div>
+<div class="cal"><span class="mono">Mon 29</span><span class="slot">10:00</span><span class="slot">12:00</span><span class="slot x">busy</span><span class="slot">16:00</span></div>
+<div class="mono" style="margin-top:16px">synced with your calendar · only free times shown</div>
+</div>
+<div class="iph"><img src="/static/site/iphone.png" alt="iPhone showing a booking and a pre-call briefing"><div class="scr"><div class="sb"><span>9:41</span><span style="display:flex;gap:5px;align-items:center"><svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="#fff"></rect><rect x="4.5" y="5" width="3" height="6" rx="1" fill="#fff"></rect><rect x="9" y="2.5" width="3" height="8.5" rx="1" fill="#fff"></rect><rect x="13.5" y="0" width="3" height="11" rx="1" fill="#fff"></rect></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="#fff" stroke-opacity=".4" fill="none"></rect><rect x="2" y="2" width="16" height="8" rx="2" fill="#fff"></rect></svg></span></div><div class="hdr"><div class="av"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z" fill="#fff"></path></svg></div><div class="nm">AI-ME</div></div><div class="th"><div class="ts">Wed 4:40 PM</div><div class="bb in"><span class="lb">#11 · New booking</span>Dana Reyes booked Thu 10:30 via your website.
+
+yes 11 to confirm</div><div class="bb out"><span class="lb">↳ #11 · New booking</span>yes 11</div><div class="ts">Thu 10:00 AM</div><div class="bb in"><span class="lb">#5 · Briefing · call in 30 min</span>Dana Reyes, Head of Ops, Northwind
+Last contact: your email, 11 days ago
+Company: 40 brokerages, hiring ops
+Asked about: the pilot
+Talking points: 4 hrs/week stat, pilot pricing</div></div><div class="ip"><div class="pl">+</div><div class="fd">Text Message</div></div></div></div>
+</div>
+</div></section>
+
+<section id="numbers"><div class="wrap">
+<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:64px;align-items:end;margin-bottom:40px">
+<div class="txt"><div class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M4 19h16M6 16V9M11 16V5M16 16v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div><h2>The numbers that matter. Nothing else.</h2></div>
+<div class="feat"><div class="fh"><span class="fn">14</span><h3>Simple Performance Dashboard</h3></div><ul><li>Show the most important metrics across AI-ME.</li><li>Track audience growth, outreach responses, qualified leads, meetings booked, and conversions.</li></ul></div>
+</div>
+<div class="card" style="padding:24px">
+<div class="mono" style="margin-bottom:16px">this week · illustrative</div>
+<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px">
+<div class="kpi"><div class="mono">audience growth</div><b>+310</b><div class="mono"><span class="g">+24%</span> followers</div></div>
+<div class="kpi"><div class="mono">outreach responses</div><b>38%</b><div class="mono">reply rate</div></div>
+<div class="kpi"><div class="mono">qualified leads</div><b>9</b><div class="mono">fit your ICP</div></div>
+<div class="kpi"><div class="mono">meetings booked</div><b>4</b><div class="mono">this week</div></div>
+<div class="kpi"><div class="mono">conversions</div><b>2</b><div class="mono">became clients</div></div>
+</div>
+</div>
+</div></section>
+
+<section id="principles"><div class="wrap">
+<div style="display:flex;flex-direction:column;gap:16px;max-width:720px;margin-bottom:40px"><div class="mono">principles</div><h2>What we won't compromise on.</h2></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+<div class="card"><p style="margin:0 0 16px;font-size:17px;color:var(--white)">Nothing posts, sends or books until you say yes by text. Every action records the reply that approved it.</p><div class="mono">rule 1 · <span class="g">your yes, every time</span></div></div>
+<div class="card"><p style="margin:0 0 16px;font-size:17px;color:var(--white)">Everything is written in your voice from your own ideas. If a draft doesn't sound like you, you never see it.</p><div class="mono">rule 2 · <span class="g">your voice or nothing</span></div></div>
+<div class="card"><p style="margin:0 0 16px;font-size:17px;color:var(--white)">From your own accounts, to real people who fit your customer profile. No spam blasts, no bought lists.</p><div class="mono">rule 3 · <span class="g">real people, real fit</span></div></div>
+</div>
+</div></section>
+
+<section id="pricing"><div class="wrap">
+<div style="display:flex;flex-direction:column;gap:16px;max-width:720px;margin-bottom:40px"><div class="mono">pricing · the diagnostic is free either way</div><h2>Less than one hire. Replaces the whole function.</h2></div>
+<div class="plans"><div class="plan"><div class="mono">AI-ME Growth</div><div class="price">$3,000<small> / month</small></div><div class="muted" style="font-size:14px">The full system for one founder.</div><ul><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>LinkedIn: 12–16 posts/month</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>X: 20–30 posts/month</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Ongoing replies and engagement on both platforms</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>AI content creation from voice memos, notes, and ideas</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Prospect research and ICP targeting</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>LinkedIn, X, and email outreach</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Automated follow-up sequences</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Lead scoring and intent detection</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Meeting booking and scheduling</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Unified inbox</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Lightweight CRM</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>AI Next Best Action</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Daily Brief / Command Center</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Meeting intelligence</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Performance dashboard</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>1 founder/profile</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Up to roughly 500–1,000 researched prospects/month</li></ul><a class="btn" href="/start">Start with a free diagnostic</a></div><div class="plan pick"><div class="mono">AI-ME Scale · <span class="v">recommended</span></div><div class="price">$5,000<small> / month</small></div><div class="muted" style="font-size:14px">More volume, more campaigns, up to 3 profiles.</div><ul><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Everything included in Growth</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>LinkedIn: 20–30 posts/month</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>X: 40–60 posts/month</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Higher engagement and reply volume</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>More aggressive outreach and follow-up</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Multiple campaigns and ICPs</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Around 1,500–2,500 researched prospects/month</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>2–3 founder/team profiles</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>More advanced reporting</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Priority support</li></ul><a class="btn" href="/start">Start with a free diagnostic</a></div><div class="plan"><div class="mono">AI-ME High Growth</div><div class="price">Custom<small></small></div><div class="muted" style="font-size:14px">For multiple executives, brands and ICPs.</div><ul><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Everything included in Scale</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>LinkedIn: 30–40+ posts/month</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>X: 60–100+ posts/month</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>High-volume engagement and outreach</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Multiple executives or brands</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Multiple ICPs and campaigns</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Higher prospecting limits</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Custom workflows</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Advanced CRM and reporting</li><li><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Priority onboarding and support</li></ul><a class="btn" href="mailto:hello@example.com">Talk to us</a></div></div>
+</div></section>
+
+<section id="faq" class="faq"><div class="wrap" style="display:grid;grid-template-columns:1fr 2fr;gap:64px">
+<div><div class="mono" style="margin-bottom:16px">faq</div><h2 style="font-size:44px">Questions</h2></div>
+<div>
+<details><summary>Do I need to open an app?</summary><p>No. Everything runs through text messages: the daily brief arrives by text and you approve, reject, edit or trigger actions by replying. The dashboard is there when you want the numbers.</p></details>
+<details><summary>Does it post and message as me?</summary><p>Yes, from your own LinkedIn, X and email accounts, and only after you approve by text. You can disconnect any account at any time.</p></details>
+<details><summary>Which systems are live today?</summary><p>SMS Control System, AI Command Center / Daily Brief, AI Content Engine, Content &amp; Audience Growth, Outreach and the Simple Performance Dashboard. Everything marked "soon" is on the roadmap.</p></details>
+<details><summary>Does it book meetings on my calendar automatically?</summary><p>Prospects can only pick times that are free on your calendar, and the meeting is only added after you text yes. You get a 30-second briefing before each call.</p></details>
+<details><summary>What if I don't answer for a week?</summary><p>Nothing goes out. It waits, and the daily brief keeps coming until you text pause.</p></details>
+</div>
+</div></section>
+
+<section><div class="wrap" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px">
+<h2>Hand over growth and client acquisition this week.</h2><p class="muted" style="margin:0;font-size:18px">It starts with a free growth diagnostic. No card until you have seen the results.</p>
+<div style="display:flex;gap:8px"><a class="btn" href="/start">Run your free diagnostic</a><a class="btn plain" href="#features">See everything it runs</a></div>
+</div></section>
+
+<footer><div class="wrap">
+<div class="fgrid">
+<div><a class="logo" href="/"><i></i>AI-ME</a><p>The Growth &amp; Client Acquisition System for founders. Run entirely by text.</p></div>
+<div><h4>Product</h4><a href="#demo">Demo</a><a href="#features">Everything included</a><a href="#outreach">Outreach</a><a href="#calls">Scheduling</a><a href="#numbers">Dashboard</a></div>
+<div><h4>Get started</h4><a href="/start">Free diagnostic</a><a href="#pricing">Pricing</a><a href="#faq">Questions</a><a href="mailto:hello@example.com">Contact</a></div>
+<div><h4>Account</h4><a href="/start">Sign in</a></div>
+</div>
+<div class="mono" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--hair);margin-top:48px;padding-top:24px"><span>© AI-ME</span><span>nothing posts, sends or books without your <span class="g">yes</span></span></div>
+</div></footer>
+
+</div>
+<script>
+(function(){
+var F=[
+      ['SMS Control System', 'Approve, reject, edit, or trigger actions without opening the app.'],
+      ['AI Command Center / Daily Brief', 'Posts, replies, leads, follow-ups, meetings and opportunities, every morning.'],
+      ['AI Content Engine', 'Voice memos, notes or rough ideas become posts, threads and replies.'],
+      ['Content & Audience Growth', 'Posts, replies, conversations and people to engage with.'],
+      ['Outreach', 'Personalized outbound on LinkedIn, X and email.'],
+      ['AI Prospect Research + ICP Builder', 'Every prospect and company researched before you reach out.'],
+      ['Lead Scoring / Intent Detection', 'Best-fit, highest-intent leads first.'],
+      ['Automated Follow-Up Sequences', 'Follows up on silence, stops when they reply or book.'],
+      ['Unified Inbox', 'LinkedIn, X, email and meetings in one prioritized inbox.'],
+      ['AI Next Best Action', 'Follow up, reply, ask for a call, wait or reconnect later.'],
+      ['Scheduling', 'Your calendar, embedded on your website.'],
+      ['Lightweight CRM', 'Contacts, history, meetings, status and next steps, kept for you.'],
+      ['Meeting Intelligence', 'A 30-second briefing before every call.'],
+      ['Simple Performance Dashboard', 'Audience growth, responses, leads, meetings, conversions.']
+    ];
+var S=[[0, "in", "How it works", "Every item is numbered. Reply yes 2, no 2, or edit 2: your change."], [1, "in", "Today · 5 items", "1  LinkedIn post\n2  X post\n3  Reply to @mara_k\n4  Outreach · 12 messages\n5  Call · Dana, 10:30"], [2, "in", "#1 · LinkedIn post · draft", "“Half our users never finished the onboarding video. So we cut it to 90 seconds. Completion went from 48% to 91%.”\n\nyes 1 · no 1 · edit 1"], [2, "out", "↳ #1 · LinkedIn post", "edit 1: add the 4 hrs/week stat"], [2, "in", "#1 · revised", "“…Completion went from 48% to 91%. One agent now saves 4 hours a week.”\n\nyes 1 to post"], [2, "out", "↳ #1 · LinkedIn post", "yes 1"], [3, "in", "#2 · X post · draft", "“41 of our first 50 customers came from one thing: replying to agents in the comments. Not ads. Not cold email. Replies.”"], [3, "out", "↳ #2 · X post", "yes 2"], [3, "in", "#3 · Reply to @mara_k · draft", "“Same pattern here. The hours go to admin, not clients. We cut 4 a week per agent.”"], [3, "out", "↳ #3 · Reply", "no 3"], [4, "in", "#4 · Outreach · 12 ready", "Sample, Dana @ Northwind:\n“Dana, saw Northwind is hiring ops across 40 offices. We cut agent admin by 4 hrs/week. Worth 15 min?”\n\nyes 4 sends all 12"], [4, "out", "↳ #4 · Outreach", "yes 4"], [5, "in", "#6 · Research", "Northwind: 40 brokerages, hiring ops. ICP match."], [6, "in", "#7 · Hot lead", "Dana opened pricing 2x today. Score 92."], [7, "in", "#8 · Follow-ups", "Tom: no reply 4d, follow-up 2 sent.\nPriya: replied, sequence stopped."], [8, "in", "#9 · Inbox", "9 new: 3 LinkedIn, 2 X, 4 email. 2 hot."], [9, "in", "#10 · Next action", "Dana: ask for a call.\nTom: wait 3 days.\nLee: reconnect in May."], [10, "in", "#11 · Booking", "Dana booked Thu 10:30 via your site.\n\nyes 11 to confirm"], [10, "out", "↳ #11 · Booking", "yes 11"], [11, "in", "#11 · Confirmed", "On your calendar. CRM: 6 touches, meeting booked, next: send deck."], [12, "in", "#5 · Briefing · call in 30 min", "Dana Reyes, Head of Ops, Northwind\nLast contact: 11 days ago\nAsked about: the pilot\nOpen with: 4 hrs/week stat"], [13, "in", "This week", "+310 followers · 38% replies · 9 qualified · 4 meetings · 2 closed"]];
+var HOLD=4, TICK=2000;
+var th=document.getElementById('thread'), rows=document.getElementById('rows'), done=document.getElementById('done'), bar=document.getElementById('pbar');
+if(!th||!rows) return;
+var rowEls=F.map(function(f,i){
+  var r=document.createElement('div'); r.className='row';
+  r.innerHTML='<span class="box"><svg class="tick" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span class="rn"></span><span class="rt"><span class="rtt"></span><span class="rs"></span></span>';
+  r.querySelector('.rn').textContent=(i<9?'0':'')+(i+1);
+  r.querySelector('.rtt').textContent=f[0]; r.querySelector('.rs').textContent=f[1];
+  rows.appendChild(r); return r;});
+var last={}; S.forEach(function(e,i){last[e[0]]=i;});
+var typ=document.createElement('div'); typ.className='bb in typ'; typ.innerHTML='<i></i><i></i><i></i>';
+var pos=0, n=S.length;
+function bubble(e){var b=document.createElement('div'); b.className='bb '+e[1];
+  var l=document.createElement('span'); l.className='lb'; l.textContent=e[2]; b.appendChild(l);
+  b.appendChild(document.createTextNode(e[3])); return b;}
+function render(){
+  var shown=Math.min(pos,n);
+  if(pos===0){th.innerHTML='';}
+  else if(pos<=n){ if(typ.parentNode) typ.remove(); th.appendChild(bubble(S[pos-1])); }
+  if(pos<n && pos>0 && S[pos][1]==='in') th.appendChild(typ); else if(typ.parentNode) typ.remove();
+  var active= shown>0 && pos<=n ? S[shown-1][0] : -1, d=0;
+  rowEls.forEach(function(r,i){
+    var isDone= last[i]<shown-1 || pos>n || (last[i]===shown-1 && pos>=n);
+    if(isDone) d++;
+    r.className='row'+(isDone?' done':'')+(i===active?' active':'');
+  });
+  done.textContent=d; bar.style.width=Math.round(d/14*100)+'%';
+}
+render();
+setInterval(function(){ pos = pos>=n+HOLD ? 0 : pos+1; render(); }, TICK);
+})();
+</script>
+</body>
+</html>

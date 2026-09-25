@@ -11,6 +11,7 @@ revenue number, an uptime SLA) — Aime doesn't have real customers yet, so the 
 is explicitly labeled illustrative, and the "what people think" slot uses the product's real,
 already-shipped rules instead of invented quotes."""
 from html import escape as e
+from pathlib import Path
 from urllib.parse import quote
 
 from ..interfaces.billing_oauth import PLANS
@@ -167,7 +168,16 @@ def _plan_card(k: str, v: dict) -> str:
 <ul>{items}</ul><a class="btn" href="/start">Start with the free diagnostic</a></div>"""
 
 
+# The current homepage: a hand-finished static page (designed on the canvas, AI-ME brand,
+# Resend-style black theme). Images live in app/static/site and are served from /static.
+_HOME = (Path(__file__).with_name("home.html")).read_text(encoding="utf-8")
+
+
 def page() -> str:
+    return _HOME
+
+
+def legacy_page() -> str:
     n = e(settings.site_name)
     plans = "".join(_plan_card(k, v) for k, v in PLANS.items())
 
